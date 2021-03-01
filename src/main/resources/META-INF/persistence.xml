@@ -4,10 +4,10 @@
              xsi:schemaLocation="
         http://xmlns.jcp.org/xml/ns/persistence
         http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
-    <persistence-unit name="Meals" transaction-type="JTA">
+    <persistence-unit name="Part" transaction-type="JTA">
         <!--		<jta-data-source>java:/PostgresDS</jta-data-source> -->
         <jta-data-source>java:jboss/datasources/AutoPartsDS</jta-data-source>
-        <class>com.justterror.car_kit.meal.entity.Meal</class>
+        <class>com.justterror.car_kit.part.entity.Part</class>
         <properties>
             <!-- Properties for Hibernate -->
             <property name="hibernate.hbm2ddl.auto" value="validate" />
