@@ -16,7 +16,7 @@
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Protected resources</web-resource-name>
-            <url-pattern>/api/meal*</url-pattern>
+            <url-pattern>/api/car-kit*</url-pattern>
             <http-method>GET</http-method>
         </web-resource-collection>
         <auth-constraint>

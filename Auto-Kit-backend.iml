@@ -5,8 +5,7 @@
       <configuration>
         <setting name="validation-enabled" value="true" />
         <datasource-mapping>
-          <factory-entry name="Meals" />
-          <factory-entry name="Part" />
+          <factory-entry name="Auto-Kit" value="c1f0bf1f-f91c-4668-aed5-899f21abfdb0" />
         </datasource-mapping>
         <naming-strategy-map />
         <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/META-INF/persistence.xml" />

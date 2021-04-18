@@ -16,10 +16,10 @@ public class ModelYear implements Serializable {
     @Column(name = "Year")
     @NotNull
     private int year;
-
+/*
     @Column(name = "CarDetailsJSON")
     @NotNull
 
     //TODO: Define which is appropriate dataType to store JSON and finish the entity class.
-    private JsonObject carDetailsJSON;
+    private JsonObject carDetailsJSON;*/
 }
