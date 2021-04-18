@@ -5,6 +5,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.security.enterprise.CallerPrincipal;
 import javax.security.enterprise.SecurityContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -17,6 +18,7 @@ import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 @ApplicationScoped
 @Path("/user")
 public class UserResource {
+
     @Inject
     Logger logger;
 

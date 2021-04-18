@@ -2,46 +2,36 @@ package com.justterror.auto_kit.user.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 
 @Entity
-@Table(name="User")
-public class User implements Serializable {
-
+@Table(name = "users", schema = "public")
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long ID;
+    private long id;
 
-    @Column(name = "Name")
+    @Column(name="phone")
     @NotNull
-    private String  name;
+    private String phone;
 
-    @Column(name = "Phone")
+    @Column(name="username")
     @NotNull
-    private String  phone;
+    private String username;
 
-    @Column(name="Password")
-    @NotNull
-    private String password;
-
-    @Column(name="Role")
+    @Column(name="role")
     @NotNull
     private String role;
 
-    public long getID() {
-        return ID;
+    @Column(name="password")
+    @NotNull
+    private String password;
+
+    public long getId() {
+        return id;
     }
 
-    public void setID(long ID) {
-        this.ID = ID;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getPhone() {
@@ -52,12 +42,12 @@ public class User implements Serializable {
         this.phone = phone;
     }
 
-    public String getPassword() {
-        return password;
+    public String getUsername() {
+        return username;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getRole() {
@@ -68,6 +58,13 @@ public class User implements Serializable {
         this.role = role;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -76,33 +73,31 @@ public class User implements Serializable {
 
         User user = (User) o;
 
-        if (ID != user.ID) return false;
-        if (!name.equals(user.name)) return false;
+        if (id != user.id) return false;
         if (!phone.equals(user.phone)) return false;
-        if (!password.equals(user.password)) return false;
-        return role.equals(user.role);
+        if (!username.equals(user.username)) return false;
+        if (!role.equals(user.role)) return false;
+        return password.equals(user.password);
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (ID ^ (ID >>> 32));
-        result = 31 * result + name.hashCode();
+        int result = (int) (id ^ (id >>> 32));
         result = 31 * result + phone.hashCode();
-        result = 31 * result + password.hashCode();
+        result = 31 * result + username.hashCode();
         result = 31 * result + role.hashCode();
+        result = 31 * result + password.hashCode();
         return result;
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "ID=" + ID +
-                ", name='" + name + '\'' +
+                "id=" + id +
                 ", phone='" + phone + '\'' +
-                ", password='" + password + '\'' +
+                ", username='" + username + '\'' +
                 ", role='" + role + '\'' +
+                ", password='" + password + '\'' +
                 '}';
     }
-
-
 }

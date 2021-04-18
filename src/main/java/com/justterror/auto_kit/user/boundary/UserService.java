@@ -1,6 +1,7 @@
 package com.justterror.auto_kit.user.boundary;
 
 import com.justterror.auto_kit.security.Constants;
+import com.justterror.auto_kit.user.boundary.UserRepository;
 import com.justterror.auto_kit.user.entity.User;
 
 import javax.ejb.Stateless;
@@ -21,26 +22,28 @@ public class UserService {
     @Inject
     UserRepository repository;
 
-    @PersistenceContext(name = "users")
+    @PersistenceContext(name="users")
     private EntityManager entityManager;
     private static final SecureRandom RAND = new SecureRandom();
+
 
 
     public String login(String username, String password) {
         User user = repository.findByUsername(username);
         if (user != null) {
             String hashedInputPwd = getMD5Hash(password);
-            if (user.getPassword().equals(hashedInputPwd)) {
+            if (user.getPassword().equals(hashedInputPwd))
+            {
                 return "token jwt";
             }
         }
         return "Failure";
     }
 
-    public User register(String username, String password) {
+    public User register(String  username, String password) {
         if (!isUserDuplicate(username) && username != null && password != null) {
             User user = new User();
-            user.setName(username);
+            user.setUsername(username);
             user.setPassword(getMD5Hash(password));
             user.setRole(Constants.USER);
             return repository.save(user);
