@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="exploded-war" name="Auto-Kit-backend:war exploded">
-    <output-path>$PROJECT_DIR$/out/artifacts/Auto_Kit_backend_war_exploded</output-path>
+    <output-path>$PROJECT_DIR$/target/auto_kit</output-path>
     <root id="root">
       <element id="directory" name="WEB-INF">
         <element id="directory" name="classes">
