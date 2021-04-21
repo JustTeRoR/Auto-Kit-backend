@@ -42,7 +42,7 @@ public class VinRangeResource {
     }
 
     @GET
-    @Path("/vin_range_id")
+    @Path("/by_vin_range_id")
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
     public VinRange getById(@QueryParam("id") String id) {

@@ -42,7 +42,7 @@ public class ScheduleRequestResource {
     }
 
     @GET
-    @Path("/schedule_request_id")
+    @Path("/by_schedule_request_id")
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
     public ScheduleRequest getById(@QueryParam("id") long id) {
@@ -51,7 +51,7 @@ public class ScheduleRequestResource {
     }
 
     @GET
-    @Path("/schedule_request_vinId")
+    @Path("/by_schedule_request_vinId")
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
     public List<ScheduleRequest> getByVinId(@QueryParam("vinId") long vinId) {

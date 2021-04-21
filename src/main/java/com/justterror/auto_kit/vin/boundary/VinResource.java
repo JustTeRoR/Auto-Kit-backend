@@ -42,7 +42,7 @@ public class VinResource {
     }
 
     @GET
-    @Path("/vin_id")
+    @Path("/by_vin_id")
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
     public Vin getById(@QueryParam("id") long id) {

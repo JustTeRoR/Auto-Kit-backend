@@ -21,7 +21,7 @@ public class VinService {
     @PersistenceContext(name = "Auto-Kit")
     private EntityManager entityManager;
 
-    public Vin getById(Long  id) {
+    public Vin getById(long  id) {
         String rawQuery = String.format("SELECT * from \"vin\" WHERE id = %d", id);
         TypedQuery<Vin> query = entityManager.createQuery(rawQuery, Vin.class);
         return query.getSingleResult();
@@ -46,7 +46,7 @@ public class VinService {
         query.executeUpdate();
     }
 
-    public void deleteVinByID(Long id) throws SQLException {
+    public void deleteVinByID(long id) throws SQLException {
         String queryString = String.format("DELETE FROM \"vin\" WHERE id IN ('%d')", id);
         Query query= entityManager.createNativeQuery(queryString);
         query.executeUpdate();
