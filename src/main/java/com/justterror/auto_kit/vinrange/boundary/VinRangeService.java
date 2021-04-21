@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.logging.Logger;
@@ -29,5 +30,14 @@ public class VinRangeService {
 
         TypedQuery<VinRange> query = entityManager.createQuery("select v from VinRange v", VinRange.class);
         return query.getResultList();
+    }
+
+
+    public void insertNewVinRangeTODB(String id, String modelYearId, String vinMask) {
+        String queryString = String.format("INSERT INTO \"vin_range\" (id, model_year_id, vin_mask) VALUES ('%s', '%s', '%s')",
+               id,modelYearId, vinMask);
+        Query query= entityManager.createNativeQuery(queryString);
+        query.executeUpdate();
+        //TODO:: Обработать эксепшены
     }
 }
