@@ -9,12 +9,14 @@ import javax.security.enterprise.SecurityContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.justterror.auto_kit.security.Constants.ADMIN;
 import static com.justterror.auto_kit.security.Constants.USER;
+import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 
 @ApplicationScoped
 @Path("/vin_range")
@@ -40,11 +42,11 @@ public class VinRangeResource {
     }
 
     @GET
-    @Path("/vin_range_id/{id}")
+    @Path("/vin_range_id")
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
-    public VinRange getById(@PathParam("id") String id) {
-        logger.info("Get VIN ranges with id = " + id);
+    public VinRange getById(@QueryParam("id") String id) {
+        logger.info("Get VIN range with id = " + id);
         return vinRangeService.getById(id);
     }
 
@@ -53,12 +55,17 @@ public class VinRangeResource {
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
     public Response insertNewVinRange(@QueryParam("id") String id, @QueryParam("model_year_id") String modelYearId,
-                                      @QueryParam("vin_mask") String vinMask) {
+                                      @QueryParam("vin_mask") String vinMask) throws SQLException {
         logger.log(Level.INFO, String.format("Inserting new vin range with parameters: id = %s, model_yead_id = %s, vin_mask = %s",
                 id, modelYearId, vinMask));
-
-        vinRangeService.insertNewVinRangeTODB(id, modelYearId, vinMask);
-        return Response.ok().build();
+        try {
+            vinRangeService.insertNewVinRangeTODB(id, modelYearId, vinMask);
+            return Response.ok().build();
+        } catch (SQLException exeption) {
+            logger.log(Level.WARNING, String.format("ERROR on insterting new vin range with parameters: id = %s, model_yead_id = %s, vin_mask = %s",
+                    id, modelYearId, vinMask));
+            return Response.status(INTERNAL_SERVER_ERROR).build();
+        }
         //TODO:: Улучшить метод, самообновление айди + ветвление и отлов ошибки, не только успешный респонс
     }
 }
