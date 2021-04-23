@@ -58,7 +58,7 @@ public class PartModelYearService {
 
     public void insertNewPartModelYearTODB(long model_year_id, long part_type_id, long measure_id, long oem_part_id,
                                            int labour, int quantity) throws SQLException {
-        String queryString = String.format("INSERT INTO \"part_model_year\" (mileage, vin_id, ip) VALUES (%d, %d, %d, %d, %d, %d)",
+        String queryString = String.format("INSERT INTO \"part_model_year\" (model_year_id, part_type_id, measure_id, oem_part_id, labour, quantity) VALUES (%d, %d, %d, %d, %d, %d)",
                 model_year_id, part_type_id, measure_id, oem_part_id, labour, quantity);
         Query query= entityManager.createNativeQuery(queryString);
         query.executeUpdate();
