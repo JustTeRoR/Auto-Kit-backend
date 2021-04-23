@@ -63,7 +63,7 @@ public class ScheduleRequestResource {
     @Path("/insert")
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
-    public Response insertNewVinRange(@QueryParam("mileage") int mileage,
+    public Response insertNewScheduleRequest(@QueryParam("mileage") int mileage,
                                       @QueryParam("vin_id") long vinId, @QueryParam("ip") String ip) throws SQLException {
         logger.log(Level.INFO, String.format("Inserting new schedule request with parameters: mileage = %d, vin_id = %d, ip = %s",
                 mileage, vinId, ip));
