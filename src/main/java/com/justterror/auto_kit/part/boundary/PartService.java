@@ -57,11 +57,10 @@ public class PartService {
         return query.getResultList();
     }
 
-    //TODO:: to check what should be placed instead of %d for lastDeliveryDate on line 64
     public void insertNewPartTODB(int quantity, long measureId, long makeId, long partTypeId, boolean isOEM, BigDecimal lasPurchasePrice,
                                            Date lastDeliveryDate, String SerialNumber) throws SQLException {
         String queryString = String.format("INSERT INTO \"part\" (quantity, measure_id, make_id, part_type_id, is_oem, last_purchase_price," +
-                        "last_delivery_time, serial_number) VALUES (%d, %d, %d, %d, %b, %f, %d, %s)",
+                        "last_delivery_time, serial_number) VALUES (%d, %d, %d, %d, %b, %f, %tD, %s)",
                 quantity, measureId, makeId, partTypeId, isOEM, lasPurchasePrice, lastDeliveryDate, SerialNumber);
         Query query= entityManager.createNativeQuery(queryString);
         query.executeUpdate();

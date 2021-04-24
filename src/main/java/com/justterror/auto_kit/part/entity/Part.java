@@ -3,6 +3,7 @@ package com.justterror.auto_kit.part.entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
@@ -39,7 +40,7 @@ public class Part {
 
     @Column(name="last_delivery_time")
     @NotNull
-    private Date lastDeliveryTime;
+    private Timestamp lastDeliveryTime;
 
     @Column(name="serial_number")
     @NotNull
@@ -102,11 +103,11 @@ public class Part {
         this.lastPurchasePrice = lastPurchasePrice;
     }
 
-    public Date getLastDeliveryTime() {
+    public Timestamp getLastDeliveryTime() {
         return lastDeliveryTime;
     }
 
-    public void setLastDeliveryTime(Date lastDeliveryTime) {
+    public void setLastDeliveryTime(Timestamp lastDeliveryTime) {
         this.lastDeliveryTime = lastDeliveryTime;
     }
 
@@ -117,7 +118,6 @@ public class Part {
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }
-
 
     @Override
     public boolean equals(Object o) {
