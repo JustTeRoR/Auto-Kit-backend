@@ -92,7 +92,7 @@ public class OrderResource {
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteOrderPartByID(@QueryParam("id") long id) throws SQLException{
-        logger.log(Level.INFO, String.format("Deleting with id = %d", id));
+        logger.log(Level.INFO, String.format("Deleting order with id = %d", id));
         try {
             orderService.deleteOrderByID(id);
             return Response.ok().build();
