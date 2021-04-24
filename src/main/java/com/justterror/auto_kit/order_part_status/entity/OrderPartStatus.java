@@ -17,6 +17,8 @@ public class OrderPartStatus {
     @NotNull
     private String key;
 
+    //TODO:: to think about enum for this field...
+
     @Column(name="title")
     @NotNull
     private String title;
