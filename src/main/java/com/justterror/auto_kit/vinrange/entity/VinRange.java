@@ -9,7 +9,7 @@ public class VinRange {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private String id;
 
     @Column(name="model_year_id")
     @NotNull
@@ -19,11 +19,11 @@ public class VinRange {
     @NotNull
     private String vinMask;
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -50,14 +50,14 @@ public class VinRange {
 
         VinRange vinRange = (VinRange) o;
 
-        if (id != vinRange.id) return false;
+        if (!id.equals(vinRange.id)) return false;
         if (!modelYearID.equals(vinRange.modelYearID)) return false;
         return vinMask.equals(vinRange.vinMask);
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
+        int result = id.hashCode();
         result = 31 * result + modelYearID.hashCode();
         result = 31 * result + vinMask.hashCode();
         return result;
@@ -66,7 +66,7 @@ public class VinRange {
     @Override
     public String toString() {
         return "VinRange{" +
-                "id=" + id +
+                "id='" + id + '\'' +
                 ", modelYearID='" + modelYearID + '\'' +
                 ", vinMask='" + vinMask + '\'' +
                 '}';
