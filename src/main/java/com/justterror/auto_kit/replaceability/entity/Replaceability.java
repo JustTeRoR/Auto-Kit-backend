@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "replaceability", schema = "public")
-public class Replaceablility {
+public class Replaceability {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,7 +48,7 @@ public class Replaceablility {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Replaceablility that = (Replaceablility) o;
+        Replaceability that = (Replaceability) o;
 
         if (id != that.id) return false;
         if (partId != that.partId) return false;
@@ -65,7 +65,7 @@ public class Replaceablility {
 
     @Override
     public String toString() {
-        return "Replaceablility{" +
+        return "Replaceability{" +
                 "id=" + id +
                 ", partId=" + partId +
                 ", partModelYearId=" + partModelYearId +

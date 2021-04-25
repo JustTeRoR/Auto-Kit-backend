@@ -1,6 +1,6 @@
 package com.justterror.auto_kit.replaceability.boundary;
 
-import com.justterror.auto_kit.replaceability.entity.Replaceablility;
+import com.justterror.auto_kit.replaceability.entity.Replaceability;
 
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
@@ -18,11 +18,9 @@ import static com.justterror.auto_kit.security.Constants.ADMIN;
 import static com.justterror.auto_kit.security.Constants.USER;
 import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 
-//TODO:: TO debug this
-
 @ApplicationScoped
 @Path("/replaceability")
-public class ReplaceablilityResource {
+public class ReplaceabilityResource {
 
     @Inject
     Logger logger;
@@ -31,43 +29,43 @@ public class ReplaceablilityResource {
     private SecurityContext securityContext;
 
     @Inject
-    private ReplaceablilityService replaceablilityService;
+    private ReplaceabilityService replaceabilityService;
 
     @GET
     @Path("/all")
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Replaceablility> listAll()
+    public List<Replaceability> listAll()
     {
         logger.info("Get all replaceability mappings from vin table");
-        return replaceablilityService.getAll();
+        return replaceabilityService.getAll();
     }
 
     @GET
-    @Path("/by_replaceablility_id")
+    @Path("/by_replaceability_id")
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
-    public Replaceablility getById(@QueryParam("id") long id) {
+    public Replaceability getById(@QueryParam("id") long id) {
         logger.info("Get replaceability mapping  with id = " + id);
-        return replaceablilityService.getById(id);
+        return replaceabilityService.getById(id);
     }
 
     @GET
     @Path("/by_part_id")
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Replaceablility> getByPartIdField(@QueryParam("part_id") long partId) {
+    public List<Replaceability> getByPartIdField(@QueryParam("part_id") long partId) {
         logger.info("Get all replaceability mappings from replaceability table with part_id = " + partId);
-        return replaceablilityService.getByPartID(partId);
+        return replaceabilityService.getByPartID(partId);
     }
 
     @GET
     @Path("/by_part_model_year_id")
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Replaceablility> getByPartModelYearIdField(@QueryParam("part_model_year_id") long partModelYearId) {
+    public List<Replaceability> getByPartModelYearIdField(@QueryParam("part_model_year_id") long partModelYearId) {
         logger.info("Get all replaceability mappings from replaceability table with part_model_year_id = " + partModelYearId);
-        return replaceablilityService.getByPartModelYearID(partModelYearId);
+        return replaceabilityService.getByPartModelYearID(partModelYearId);
     }
 
     @POST
@@ -78,7 +76,7 @@ public class ReplaceablilityResource {
         logger.log(Level.INFO, String.format("Inserting new replaceability with parameters: part_id = %d, part_model_year_id = %d",
                 partId, partModelYearId));
         try {
-            replaceablilityService.insertNewReplaceabilityTODB(partId, partModelYearId);
+            replaceabilityService.insertNewReplaceabilityTODB(partId, partModelYearId);
             return Response.ok().build();
         } catch (SQLException exeption) {
             logger.log(Level.WARNING, String.format("ERROR on insterting new replaceability with parameters: part_id = %d, part_model_year_id = %d",
@@ -94,7 +92,7 @@ public class ReplaceablilityResource {
     public Response deleteReplaceabilityWithID(@QueryParam("id") long id) throws SQLException{
         logger.log(Level.INFO, String.format("Deleting replaceability with id = %d", id));
         try {
-            replaceablilityService.deleteReplaceabilityByID(id);
+            replaceabilityService.deleteReplaceabilityByID(id);
             return Response.ok().build();
         } catch (SQLException exception) {
             logger.log(Level.WARNING, String.format("ERROR on deleting replaceability with id = %d", id));

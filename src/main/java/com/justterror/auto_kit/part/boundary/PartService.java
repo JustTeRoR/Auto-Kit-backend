@@ -7,11 +7,13 @@ import javax.inject.Inject;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
-
-//TODO:: To debug this
 
 @Stateless
 public class PartService {
@@ -29,7 +31,7 @@ public class PartService {
     }
 
     public List<Part> getAll() {
-        TypedQuery<Part> query = entityManager.createQuery("select p from PartModelYear p", Part.class);
+        TypedQuery<Part> query = entityManager.createQuery("select p from Part p", Part.class);
         return query.getResultList();
     }
 
@@ -58,12 +60,10 @@ public class PartService {
     }
 
     public void insertNewPartTODB(int quantity, long measureId, long makeId, long partTypeId, boolean isOEM, BigDecimal lasPurchasePrice,
-                                           Date lastDeliveryDate, String SerialNumber) throws SQLException {
-        String queryString = String.format("INSERT INTO \"part\" (quantity, measure_id, make_id, part_type_id, is_oem, last_purchase_price," +
-                        "last_delivery_time, serial_number) VALUES (%d, %d, %d, %d, %b, %f, %tD, %s)",
-                quantity, measureId, makeId, partTypeId, isOEM, lasPurchasePrice, lastDeliveryDate, SerialNumber);
-        Query query= entityManager.createNativeQuery(queryString);
-        query.executeUpdate();
+                                  String SerialNumber, String lastDeliveryDate) throws SQLException {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        Part insertPart = new Part(quantity,measureId,makeId,partTypeId,isOEM,lasPurchasePrice,LocalDateTime.parse(lastDeliveryDate,formatter),SerialNumber);
+        entityManager.persist(insertPart);
     }
 
     public void deletePartByID(long id) throws SQLException{

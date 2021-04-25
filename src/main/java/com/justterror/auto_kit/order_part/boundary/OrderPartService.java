@@ -14,8 +14,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
-//TODO:: To debug this
-
 @Stateless
 public class OrderPartService {
 
@@ -62,11 +60,8 @@ public class OrderPartService {
 
     public void insertNewOrderPartTODB(long orderId, long orderPartStatusId, long partProviderId, BigDecimal purchasePrice, BigDecimal price,
                                   BigDecimal labourPrice, int count, long partId) throws SQLException {
-        String queryString = String.format("INSERT INTO \"order_part\" (order_id, order_part_status_id, part_provider_id, purchase_price, price, " +
-                        "labour_price, count, part_id) VALUES (%d, %d, %d, %f, %f, %f, %d, %d)",
-                orderId, orderPartStatusId, partProviderId, purchasePrice, price, labourPrice, count, partId);
-        Query query= entityManager.createNativeQuery(queryString);
-        query.executeUpdate();
+        OrderPart insertOrderPart = new OrderPart(orderId, orderPartStatusId, partProviderId, purchasePrice, price, labourPrice, count, partId);
+        entityManager.persist(insertOrderPart);
     }
 
     public void deleteOrderPartByID(long id) throws SQLException{

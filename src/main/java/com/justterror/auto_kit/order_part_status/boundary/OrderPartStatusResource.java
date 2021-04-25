@@ -41,7 +41,7 @@ public class OrderPartStatusResource {
     }
 
     @GET
-    @Path("/by_order_status_id")
+    @Path("/by_order_part_status_id")
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
     public OrderPartStatus getById(@QueryParam("id") long id) {

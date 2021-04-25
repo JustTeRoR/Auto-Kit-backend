@@ -66,6 +66,5 @@ public class VinRangeResource {
                     id, modelYearId, vinMask));
             return Response.status(INTERNAL_SERVER_ERROR).build();
         }
-        //TODO:: Улучшить метод, самообновление айди + ветвление и отлов ошибки, не только успешный респонс
     }
 }

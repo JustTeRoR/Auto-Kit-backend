@@ -57,8 +57,6 @@ public class VinResource {
     public Vin getByVinField(@QueryParam("vin") String vin) {
         logger.info("Get all VINs from vin table with vin = " + vin);
         return vinService.getByVin(vin);
-
-        //TODO:: TO debug this when in table model_year wil be something, because .modelYearID to null value
     }
 
     @POST

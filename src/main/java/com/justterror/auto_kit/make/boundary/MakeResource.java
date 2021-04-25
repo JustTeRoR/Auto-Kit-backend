@@ -17,8 +17,6 @@ import java.util.logging.Logger;
 import static com.justterror.auto_kit.security.Constants.ADMIN;
 import static com.justterror.auto_kit.security.Constants.USER;
 
-//TODO:: to debug this
-
 @ApplicationScoped
 @Path("/make")
 public class MakeResource {

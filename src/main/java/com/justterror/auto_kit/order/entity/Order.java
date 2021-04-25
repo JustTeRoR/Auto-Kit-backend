@@ -3,6 +3,7 @@ package com.justterror.auto_kit.order.entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -23,15 +24,23 @@ public class Order {
 
     @Column(name="creation_date")
     @NotNull
-    private Date creationDate;
+    private LocalDateTime creationDate;
 
     @Column(name="change_date")
     @NotNull
-    private Date changeDate;
+    private LocalDateTime changeDate;
 
     @Column(name="user_id")
     @NotNull
     private long userId;
+
+    public Order(long orderStatusId, BigDecimal price, LocalDateTime creationDate, LocalDateTime changeDate, long userId) {
+        this.orderStatusId = orderStatusId;
+        this.price = price;
+        this.creationDate = creationDate;
+        this.changeDate = changeDate;
+        this.userId = userId;
+    }
 
     public long getId() {
         return id;
@@ -57,19 +66,19 @@ public class Order {
         this.price = price;
     }
 
-    public Date getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 
-    public Date getChangeDate() {
+    public LocalDateTime getChangeDate() {
         return changeDate;
     }
 
-    public void setChangeDate(Date changeDate) {
+    public void setChangeDate(LocalDateTime changeDate) {
         this.changeDate = changeDate;
     }
 

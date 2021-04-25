@@ -47,10 +47,12 @@ public class ModelService {
     }
 
     public void insertModelTODB(long make_id, long vpicId, String name, String trimName) throws SQLException {
-        String queryString = String.format("INSERT INTO \"model\" (make_id, vpic_id, name, trim_name) VALUES (%d, %d, %s, %s)",
+       /* String queryString = String.format("INSERT INTO \"model\" (make_id, vpic_id, name, trim_name) VALUES (%d, %d, %s, %s)",
                 make_id, vpicId, name, trimName);
         Query query= entityManager.createNativeQuery(queryString);
-        query.executeUpdate();
+        query.executeUpdate();*/
+        Model insertModel = new Model(make_id, vpicId, name, trimName);
+        entityManager.persist(insertModel);
     }
 
     public void deleteModelByID(long id) throws SQLException {

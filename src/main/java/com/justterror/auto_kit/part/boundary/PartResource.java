@@ -11,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -19,8 +20,6 @@ import java.util.logging.Logger;
 import static com.justterror.auto_kit.security.Constants.ADMIN;
 import static com.justterror.auto_kit.security.Constants.USER;
 import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
-
-//TODO:: to debug this
 
 @ApplicationScoped
 @Path("/part")
@@ -55,7 +54,7 @@ public class PartResource {
     }
 
     @GET
-    @Path("/serial_number")
+    @Path("/by_serial_number")
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
     public List<Part> getByModelYearId(@QueryParam("serial_number") String serialNumber) {
@@ -97,10 +96,10 @@ public class PartResource {
     public Response insertNewPartModelYear(@QueryParam("quantity") int quantity, @QueryParam("measure_id") long measureId,
                                            @QueryParam("make_id") long makeId, @QueryParam("part_type_id") long partTypeId,
                                            @QueryParam("is_oem") boolean isOEM, @QueryParam("last_purchase_price") BigDecimal lastPurchasePrice,
-                                           @QueryParam("last_delivery_time") Date lastDeliveryTime, @QueryParam("serial_number") String serialNumber) throws SQLException {
+                                           @QueryParam("last_delivery_time") String lastDeliveryTime, @QueryParam("serial_number") String serialNumber) throws SQLException {
         logger.log(Level.INFO, String.format("Inserting new part with parameters: serial_number = %s and etc.", serialNumber));
         try {
-            partService.insertNewPartTODB(quantity,measureId,makeId, partTypeId, isOEM, lastPurchasePrice, lastDeliveryTime, serialNumber);
+            partService.insertNewPartTODB(quantity,measureId,makeId, partTypeId, isOEM, lastPurchasePrice, serialNumber, lastDeliveryTime);
             return Response.ok().build();
         } catch (SQLException exeption) {
             logger.log(Level.WARNING, String.format("ERROR on inserting part with parameters: serial_number = %s and etc.", serialNumber));
