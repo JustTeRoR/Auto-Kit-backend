@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -40,12 +41,23 @@ public class Part {
 
     @Column(name="last_delivery_time")
     @NotNull
-    private Timestamp lastDeliveryTime;
+    private LocalDateTime lastDeliveryTime;
 
     @Column(name="serial_number")
     @NotNull
     //@GeneratedValue(strategy = GenerationType.IDENTITY) //TODO:: To check this if it's provide unique constraint for this column
     private String serialNumber;
+
+    public Part(int quantity, long measureId, long makeId, long partTypeId, boolean isOEM, BigDecimal lastPurchasePrice, LocalDateTime lastDeliveryTime, String serialNumber) {
+        this.quantity = quantity;
+        this.measureId = measureId;
+        this.makeId = makeId;
+        this.partTypeId = partTypeId;
+        this.isOEM = isOEM;
+        this.lastPurchasePrice = lastPurchasePrice;
+        this.lastDeliveryTime = lastDeliveryTime;
+        this.serialNumber = serialNumber;
+    }
 
     public long getId() {
         return id;
@@ -103,11 +115,11 @@ public class Part {
         this.lastPurchasePrice = lastPurchasePrice;
     }
 
-    public Timestamp getLastDeliveryTime() {
+    public LocalDateTime getLastDeliveryTime() {
         return lastDeliveryTime;
     }
 
-    public void setLastDeliveryTime(Timestamp lastDeliveryTime) {
+    public void setLastDeliveryTime(LocalDateTime lastDeliveryTime) {
         this.lastDeliveryTime = lastDeliveryTime;
     }
 

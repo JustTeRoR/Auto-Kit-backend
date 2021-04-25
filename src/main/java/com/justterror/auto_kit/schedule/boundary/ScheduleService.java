@@ -22,19 +22,19 @@ public class ScheduleService {
     private EntityManager entityManager;
 
     public Schedule getById(Long  id) {
-        String rawQuery = String.format("SELECT * from \"schedule\" WHERE id = %d", id);
+        String rawQuery = String.format("FROM Schedule WHERE id = %d", id);
         TypedQuery<Schedule> query = entityManager.createQuery(rawQuery, Schedule.class);
         return query.getSingleResult();
     }
 
     public List<Schedule> getByPartModelYearID(long  partModelYearID) {
-        String rawQuery = String.format("SELECT * from \"schedule\" WHERE part_model_year_id = %d", partModelYearID);
+        String rawQuery = String.format("FROM Schedule WHERE part_model_year_id = %d", partModelYearID);
         TypedQuery<Schedule> query = entityManager.createQuery(rawQuery, Schedule.class);
         return query.getResultList();
     }
 
     public List<Schedule> getByModelYearID(long  modelYearID) {
-        String rawQuery = String.format("SELECT * from \"schedule\" WHERE model_year_id = %d", modelYearID);
+        String rawQuery = String.format("FROM Schedule WHERE model_year_id = %d", modelYearID);
         TypedQuery<Schedule> query = entityManager.createQuery(rawQuery, Schedule.class);
         return query.getResultList();
     }

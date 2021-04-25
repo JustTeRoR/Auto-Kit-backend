@@ -1,5 +1,8 @@
 package com.justterror.auto_kit.order_part.entity;
 
+import com.justterror.auto_kit.order.entity.Order;
+import com.sun.tools.corba.se.idl.constExpr.Or;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -42,6 +45,17 @@ public class OrderPart {
     @Column(name="part_id")
     @NotNull
     private long partId;
+
+    public OrderPart(long orderId, long orderPartStatusId, long partProviderId, BigDecimal purchasePrice, BigDecimal price, BigDecimal labourPrice, int count, long partId) {
+        this.orderId = orderId;
+        this.orderPartStatusId = orderPartStatusId;
+        this.partProviderId = partProviderId;
+        this.purchasePrice = purchasePrice;
+        this.price = price;
+        this.labourPrice = labourPrice;
+        this.count = count;
+        this.partId = partId;
+    }
 
     public long getId() {
         return id;

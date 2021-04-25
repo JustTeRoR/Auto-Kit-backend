@@ -1,6 +1,6 @@
 package com.justterror.auto_kit.replaceability.boundary;
 
-import com.justterror.auto_kit.replaceability.entity.Replaceablility;
+import com.justterror.auto_kit.replaceability.entity.Replaceability;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 @Stateless
-public class ReplaceablilityService {
+public class ReplaceabilityService {
 
     @Inject
     Logger logger;
@@ -21,27 +21,27 @@ public class ReplaceablilityService {
     @PersistenceContext(name = "Auto-Kit")
     private EntityManager entityManager;
 
-    public Replaceablility getById(Long  id) {
-        String rawQuery = String.format("SELECT * from \"replaceability\" WHERE id = %d", id);
-        TypedQuery<Replaceablility> query = entityManager.createQuery(rawQuery, Replaceablility.class);
+    public Replaceability getById(Long  id) {
+        String rawQuery = String.format("FROM Replaceability WHERE id = %d", id);
+        TypedQuery<Replaceability> query = entityManager.createQuery(rawQuery, Replaceability.class);
         return query.getSingleResult();
     }
 
-    public List<Replaceablility> getByPartModelYearID(long  partModelYearID) {
-        String rawQuery = String.format("SELECT * from \"replaceability\" WHERE part_model_year_id = %d", partModelYearID);
-        TypedQuery<Replaceablility> query = entityManager.createQuery(rawQuery, Replaceablility.class);
+    public List<Replaceability> getByPartModelYearID(long  partModelYearID) {
+        String rawQuery = String.format("FROM Replaceability WHERE part_model_year_id = %d", partModelYearID);
+        TypedQuery<Replaceability> query = entityManager.createQuery(rawQuery, Replaceability.class);
         return query.getResultList();
     }
 
-    public List<Replaceablility> getByPartID(long  partId) {
-        String rawQuery = String.format("SELECT * from \"replaceability\" WHERE part_id = %d", partId);
-        TypedQuery<Replaceablility> query = entityManager.createQuery(rawQuery, Replaceablility.class);
+    public List<Replaceability> getByPartID(long  partId) {
+        String rawQuery = String.format("FROM Replaceability WHERE part_id = %d", partId);
+        TypedQuery<Replaceability> query = entityManager.createQuery(rawQuery, Replaceability.class);
         return query.getResultList();
     }
 
-    public List<Replaceablility> getAll() {
+    public List<Replaceability> getAll() {
 
-        TypedQuery<Replaceablility> query = entityManager.createQuery("select s from Replaceablility s", Replaceablility.class);
+        TypedQuery<Replaceability> query = entityManager.createQuery("select s from Replaceability s", Replaceability.class);
         return query.getResultList();
     }
 

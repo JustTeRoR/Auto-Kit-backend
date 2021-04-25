@@ -19,8 +19,6 @@ import static com.justterror.auto_kit.security.Constants.ADMIN;
 import static com.justterror.auto_kit.security.Constants.USER;
 import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 
-//TODO:: TO debug this module later  due to FKs in other tables not implemented yet
-
 @ApplicationScoped
 @Path("/schedule")
 public class ScheduleResource {
@@ -68,8 +66,6 @@ public class ScheduleResource {
     public List<Schedule> getByVinField(@QueryParam("model_year_id") long modelYearID) {
         logger.info("Get all Schedules with part_model_year_id = " + modelYearID);
         return scheduleService.getByModelYearID(modelYearID);
-
-        //TODO:: TO debug this when in table model_year wil be something, because .modelYearID to null value
     }
 
     @POST

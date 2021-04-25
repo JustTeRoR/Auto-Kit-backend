@@ -2,6 +2,7 @@ package com.justterror.auto_kit.order.boundary;
 
 
 import com.justterror.auto_kit.order.entity.Order;
+import com.sun.tools.corba.se.idl.constExpr.Or;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -11,6 +12,8 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -47,12 +50,8 @@ public class OrderService {
     }
 
     public void createOrderTODB(long orderStatusId, BigDecimal price, long userId) throws SQLException {
-        Date currentTime = new Date();
-        String queryString = String.format("INSERT INTO \"order\" (order_status_id, price, creation_date, change_date, user_id) " +
-                        "VALUES (%d, %f, %tD, %tD, %d)",
-                orderStatusId, price, currentTime, currentTime, userId);
-        Query query= entityManager.createNativeQuery(queryString);
-        query.executeUpdate();
+        Order insertOrder = new Order(orderStatusId, price, LocalDateTime.now(), LocalDateTime.now(), userId);
+        entityManager.persist(insertOrder);
     }
 
     public void deleteOrderByID(long id) throws SQLException {

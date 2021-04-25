@@ -12,8 +12,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Logger;
 
-//TODO:: TO debug this
-
 @Stateless
 public class ModelYearService {
     @Inject

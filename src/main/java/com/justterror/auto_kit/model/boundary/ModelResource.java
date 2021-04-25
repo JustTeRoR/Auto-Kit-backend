@@ -21,8 +21,6 @@ import static com.justterror.auto_kit.security.Constants.ADMIN;
 import static com.justterror.auto_kit.security.Constants.USER;
 import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 
-//TODO:: to debug this
-
 @ApplicationScoped
 @Path("/model")
 public class ModelResource {
