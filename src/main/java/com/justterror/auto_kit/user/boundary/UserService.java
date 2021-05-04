@@ -40,19 +40,6 @@ public class UserService {
         return "Failure";
     }
 
-    public User register(String  username, String password) {
-        if (!isUserDuplicate(username) && username != null && password != null) {
-            User user = new User();
-            user.setUsername(username);
-            user.setPassword(getMD5Hash(password));
-            user.setRole(Constants.USER);
-            return repository.save(user);
-        } else {
-            //TODO:: To debug this
-            return null;
-        }
-    }
-
     private boolean isUserDuplicate(String username) {
         logger.info("Verifing does username = " + username + "is unique");
         User user = repository.findByUsername(username);

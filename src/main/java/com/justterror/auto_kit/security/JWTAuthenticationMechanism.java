@@ -4,6 +4,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.json.JsonObject;
 import javax.security.enterprise.AuthenticationStatus;
 import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import javax.security.enterprise.authentication.mechanism.http.HttpMessageContext;
@@ -13,6 +14,12 @@ import javax.security.enterprise.identitystore.CredentialValidationResult;
 import javax.security.enterprise.identitystore.IdentityStoreHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,7 +43,7 @@ public class JWTAuthenticationMechanism implements HttpAuthenticationMechanism {
 
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request, HttpServletResponse response, HttpMessageContext context) {
-
+/*
         logger.log(Level.INFO, "validateRequest: {0}", request.getRequestURI());
        //TODO:: In further updates remove password from url string
         String name = request.getParameter("name");
@@ -54,6 +61,39 @@ public class JWTAuthenticationMechanism implements HttpAuthenticationMechanism {
             // if the authentication failed, we return the unauthorized status in the http response
                 return context.responseUnauthorized();
         } else if (token != null) {
+            // validation of the jwt credential
+            return validateToken(token, context);
+        } else if (context.isProtected()) {
+            // A protected resource is a resource for which a constraint has been defined.
+            // if there are no credentials and the resource is protected, we response with unauthorized status
+            return context.responseUnauthorized();
+        }
+        // there are no credentials AND the resource is not protected,
+        // SO Instructs the container to "do nothing"
+        return context.doNothing();
+        */
+        logger.log(Level.INFO, "validateRequest: {0}", request.getRequestURI());
+        String user_ids = request.getParameter("user_ids");
+        String access_token = request.getParameter("access_token");
+        String version  = "5.92";
+        String token = extractToken(context);
+
+        if (user_ids != null && access_token != null) {
+            logger.log(Level.INFO, "credentials : {0}, {1}", new String[]{user_ids, access_token});
+            try {
+                if (validateVkUser(version, access_token,user_ids)) {
+
+                    // Communicate the details of the authenticated user to the container and return SUCCESS.
+                    CredentialValidationResult result = identityStoreHandler.validate(new UsernamePasswordCredential("TestUser", "Crytek_2"));
+                    return context.notifyContainerAboutLogin(result);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            // if the authentication failed, we return the unauthorized status in the http response
+            return context.responseUnauthorized();
+        }
+        else if (token != null) {
             // validation of the jwt credential
             return validateToken(token, context);
         } else if (context.isProtected()) {
@@ -128,5 +168,27 @@ public class JWTAuthenticationMechanism implements HttpAuthenticationMechanism {
      */
     public Boolean isRememberMe(HttpMessageContext context) {
         return Boolean.valueOf(context.getRequest().getParameter("rememberme"));
+    }
+
+    public Boolean validateVkUser(String version, String access_token, String user_ids) throws IOException {
+        String rawUrl = String.format("https://api.vk.com/method/users.get?v=%s&user_ids=%s&access_token=%s",version, user_ids, access_token);
+        URL validateVkUser = new URL(rawUrl);
+        HttpURLConnection connection = (HttpURLConnection) validateVkUser.openConnection();
+        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+
+        String jsonResponse = response.toString();
+        if (jsonResponse.contains("User authorization failed")) {
+            return false;
+        }
+        else {
+            return true;
+        }
+
     }
 }

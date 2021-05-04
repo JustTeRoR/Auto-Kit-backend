@@ -42,13 +42,4 @@ public class UserResource {
         }
         return Response.status(UNAUTHORIZED).build();
     }
-
-    @POST
-    @Path("/register/{username}&{password}")
-    @PermitAll
-    public Response registerUser(@PathParam("username") String username, @PathParam("password") String password)  {
-        logger.info("Register new person");
-        userService.register(username, password);
-        return Response.ok().build();
-    }
 }

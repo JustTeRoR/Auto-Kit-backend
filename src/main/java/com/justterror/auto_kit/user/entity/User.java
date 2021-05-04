@@ -11,7 +11,6 @@ public class User {
     private long id;
 
     @Column(name="phone")
-    @NotNull
     private String phone;
 
     @Column(name="username")
