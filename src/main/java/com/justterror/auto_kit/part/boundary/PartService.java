@@ -53,10 +53,12 @@ public class PartService {
         return query.getResultList();
     }
 
-    public List<Part> getAllBySerialNumber(String serialNumber) {
+    public List<Object[]> getAllBySerialNumber(String serialNumber) {
         //String rawQuery = String.format("FROM Part WHERE serial_number like ('%s",serialNumber + "%')");
         //TypedQuery<Part> query = entityManager.createQuery(rawQuery, Part.class);
-        String rawQuery = String.format("select p.id, p.quantity, me.name as measure_name, ma.name as make_name, pt.name as part_type_name, p.is_oem, p.last_purchase_price, p.serial_number, p.last_delivery_time from part p inner join measure me on p.measure_id = me.id inner join make ma on p.make_id = ma.id inner join part_type pt on p.part_type_id=pt.id where serial_number like ('%s",serialNumber + "%')");
+        String rawQuery = String.format("select p.id, p.quantity, me.name as measure_name, ma.name as make_name, pt.name as part_type_name, " +
+                "p.is_oem, p.last_purchase_price, p.serial_number, p.last_delivery_time from part p inner join measure me on p.measure_id = me.id " +
+                "inner join make ma on p.make_id = ma.id inner join part_type pt on p.part_type_id=pt.id where serial_number like ('%s",serialNumber + "%')");
         Query query = entityManager.createNativeQuery(rawQuery);
         return query.getResultList();
     }

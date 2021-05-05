@@ -3,8 +3,6 @@ package com.justterror.auto_kit.security;
 import com.justterror.auto_kit.part.boundary.PartService;
 import com.justterror.auto_kit.user.boundary.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -87,7 +85,6 @@ public class JWTAuthenticationMechanism implements HttpAuthenticationMechanism {
         String access_token = request.getParameter("access_token");
         String version  = "5.92";
         String token = extractToken(context);
-        //TODO:: To debug this part
         if (user_ids != null && access_token != null) {
             logger.log(Level.INFO, "credentials : {0}, {1}", new String[]{user_ids, access_token});
             try {
@@ -196,7 +193,6 @@ public class JWTAuthenticationMechanism implements HttpAuthenticationMechanism {
         }
     }
 
-    //TODO:: TO DeBuG THIS
     public String getExternalVKuserName(String version, String access_token, String user_ids) throws IOException {
         String rawUrl = String.format("https://api.vk.com/method/users.get?v=%s&user_ids=%s&access_token=%s",version, user_ids, access_token);
         URL validateVkUser = new URL(rawUrl);
