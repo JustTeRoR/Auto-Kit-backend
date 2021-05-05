@@ -31,12 +31,12 @@ public class AuthenticationIdentityStore implements IdentityStore {
     @Override
     public CredentialValidationResult validate(Credential credential) {
         CredentialValidationResult result;
-
+        //TODO:: TO debug this part
         if (credential instanceof UsernamePasswordCredential) {
             UsernamePasswordCredential usernamePassword = (UsernamePasswordCredential) credential;
             User expectedUser = repository.findByUsername(usernamePassword.getCaller());
 
-            if (expectedUser != null && expectedUser.getPassword().equals(UserService.getMD5Hash(usernamePassword.getPasswordAsString()))) {
+            if (expectedUser != null && expectedUser.getAccessToken().equals(usernamePassword.getPasswordAsString())) {
                 result = new CredentialValidationResult(usernamePassword.getCaller());
             } else {
                 result = INVALID_RESULT;

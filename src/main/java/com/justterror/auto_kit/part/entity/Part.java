@@ -48,6 +48,8 @@ public class Part {
     @NotNull
     private String serialNumber;
 
+
+
     public Part(int quantity, long measureId, long makeId, long partTypeId, boolean isOEM, BigDecimal lastPurchasePrice, LocalDateTime lastDeliveryTime, String serialNumber) {
         this.quantity = quantity;
         this.measureId = measureId;

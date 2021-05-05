@@ -33,8 +33,8 @@ public class ReplaceabilityService {
         return query.getResultList();
     }
 
-    public List<Replaceability> getByPartID(long  partId) {
-        String rawQuery = String.format("FROM Replaceability WHERE part_id = %d", partId);
+    public List<Replaceability> getByPartID1(long  partId1) {
+        String rawQuery = String.format("FROM Replaceability WHERE part_id1 = %d", partId1);
         TypedQuery<Replaceability> query = entityManager.createQuery(rawQuery, Replaceability.class);
         return query.getResultList();
     }

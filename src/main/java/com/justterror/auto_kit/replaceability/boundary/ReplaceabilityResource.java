@@ -54,9 +54,9 @@ public class ReplaceabilityResource {
     @Path("/by_part_id")
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Replaceability> getByPartIdField(@QueryParam("part_id") long partId) {
-        logger.info("Get all replaceability mappings from replaceability table with part_id = " + partId);
-        return replaceabilityService.getByPartID(partId);
+    public List<Replaceability> getByPartIdField(@QueryParam("part_id1") long partId1) {
+        logger.info("Get all replaceability mappings from replaceability table with part_id = " + partId1);
+        return replaceabilityService.getByPartID1(partId1);
     }
 
     @GET

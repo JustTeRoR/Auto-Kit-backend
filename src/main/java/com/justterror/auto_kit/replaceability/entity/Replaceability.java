@@ -11,13 +11,17 @@ public class Replaceability {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name="part_id")
+    @Column(name="part_id1")
     @NotNull
-    private long partId;
+    private long partId1;
 
     @Column(name="part_model_year_id")
     @NotNull
     private long partModelYearId;
+
+    @Column(name="part_id2")
+    @NotNull
+    private long partId2;
 
     public long getId() {
         return id;
@@ -27,12 +31,12 @@ public class Replaceability {
         this.id = id;
     }
 
-    public long getPartId() {
-        return partId;
+    public long getPartId1() {
+        return partId1;
     }
 
-    public void setPartId(long partId) {
-        this.partId = partId;
+    public void setPartId1(long partId1) {
+        this.partId1 = partId1;
     }
 
     public long getPartModelYearId() {
@@ -43,6 +47,14 @@ public class Replaceability {
         this.partModelYearId = partModelYearId;
     }
 
+    public long getPartId2() {
+        return partId2;
+    }
+
+    public void setPartId2(long partId2) {
+        this.partId2 = partId2;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -51,15 +63,17 @@ public class Replaceability {
         Replaceability that = (Replaceability) o;
 
         if (id != that.id) return false;
-        if (partId != that.partId) return false;
-        return partModelYearId == that.partModelYearId;
+        if (partId1 != that.partId1) return false;
+        if (partModelYearId != that.partModelYearId) return false;
+        return partId2 == that.partId2;
     }
 
     @Override
     public int hashCode() {
         int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (int) (partId ^ (partId >>> 32));
+        result = 31 * result + (int) (partId1 ^ (partId1 >>> 32));
         result = 31 * result + (int) (partModelYearId ^ (partModelYearId >>> 32));
+        result = 31 * result + (int) (partId2 ^ (partId2 >>> 32));
         return result;
     }
 
@@ -67,8 +81,9 @@ public class Replaceability {
     public String toString() {
         return "Replaceability{" +
                 "id=" + id +
-                ", partId=" + partId +
+                ", partId1=" + partId1 +
                 ", partModelYearId=" + partModelYearId +
+                ", partId2=" + partId2 +
                 '}';
     }
 }

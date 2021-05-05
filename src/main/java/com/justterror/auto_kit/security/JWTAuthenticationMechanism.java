@@ -1,6 +1,10 @@
 package com.justterror.auto_kit.security;
 
+import com.justterror.auto_kit.part.boundary.PartService;
+import com.justterror.auto_kit.user.boundary.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -20,8 +24,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.justterror.auto_kit.security.Constants.*;
 
@@ -40,6 +47,9 @@ public class JWTAuthenticationMechanism implements HttpAuthenticationMechanism {
 
     @Inject
     private TokenProvider tokenProvider;
+
+    @Inject
+    private UserService userService;
 
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request, HttpServletResponse response, HttpMessageContext context) {
@@ -77,17 +87,23 @@ public class JWTAuthenticationMechanism implements HttpAuthenticationMechanism {
         String access_token = request.getParameter("access_token");
         String version  = "5.92";
         String token = extractToken(context);
-
+        //TODO:: To debug this part
         if (user_ids != null && access_token != null) {
             logger.log(Level.INFO, "credentials : {0}, {1}", new String[]{user_ids, access_token});
             try {
                 if (validateVkUser(version, access_token,user_ids)) {
-
-                    // Communicate the details of the authenticated user to the container and return SUCCESS.
-                    CredentialValidationResult result = identityStoreHandler.validate(new UsernamePasswordCredential("TestUser", "Crytek_2"));
-                    return context.notifyContainerAboutLogin(result);
+                    String username = getExternalVKuserName(version, access_token, user_ids);
+                    if (userService.isUserDuplicate(username)) {
+                        CredentialValidationResult result = identityStoreHandler.validate(new UsernamePasswordCredential(username, access_token));
+                        return context.notifyContainerAboutLogin(result);
+                    } else {
+                        long id = Long.parseLong(user_ids);
+                        userService.registerNewUser(id, access_token, username);
+                        CredentialValidationResult result = identityStoreHandler.validate(new UsernamePasswordCredential(username, access_token));
+                        return context.notifyContainerAboutLogin(result);
+                    }
                 }
-            } catch (IOException e) {
+            } catch (IOException | SQLException e) {
                 e.printStackTrace();
             }
             // if the authentication failed, we return the unauthorized status in the http response
@@ -171,6 +187,17 @@ public class JWTAuthenticationMechanism implements HttpAuthenticationMechanism {
     }
 
     public Boolean validateVkUser(String version, String access_token, String user_ids) throws IOException {
+        String vkUserName = getExternalVKuserName(version, access_token, user_ids);
+        if (!vkUserName.equals(" ")) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    //TODO:: TO DeBuG THIS
+    public String getExternalVKuserName(String version, String access_token, String user_ids) throws IOException {
         String rawUrl = String.format("https://api.vk.com/method/users.get?v=%s&user_ids=%s&access_token=%s",version, user_ids, access_token);
         URL validateVkUser = new URL(rawUrl);
         HttpURLConnection connection = (HttpURLConnection) validateVkUser.openConnection();
@@ -181,14 +208,21 @@ public class JWTAuthenticationMechanism implements HttpAuthenticationMechanism {
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
         }
-
-        String jsonResponse = response.toString();
-        if (jsonResponse.contains("User authorization failed")) {
-            return false;
+        in.close();
+        String responseStr = response.toString();
+        String regexp1 = "\"(first_name)\":\"((\\ \"|[^\"])*)";
+        String regexp2 = "\"(last_name)\":\"((\\ \"|[^\"])*)";
+        Pattern pattern = Pattern.compile(regexp1);
+        Pattern pattern1 = Pattern.compile(regexp2);
+        Matcher matcher = pattern.matcher(responseStr);
+        Matcher matcher1 = pattern1.matcher(responseStr);
+        if (matcher.find() && matcher1.find())
+        {
+            String name = matcher.group(2);
+            String surname = matcher1.group(2);
+            return name + " " + surname;
+        } else {
+            return " ";
         }
-        else {
-            return true;
-        }
-
     }
 }

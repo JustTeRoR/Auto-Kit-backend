@@ -54,14 +54,10 @@ public class PartService {
     }
 
     public List<Part> getAllBySerialNumber(String serialNumber) {
-        //String rawQuery = String.format("FROM Part WHERE serial_number = '%s'", serialNumber);
-        String rawQuery = String.format("SELECT p.id, p.quantity, p.measure_id, me.name as measure_name, p.make_id, ma.name as make_name, p.part_type_id, pt.name as " +
-                "part_type_name, p.is_oem, p.last_purchase_price, p.serial_number, p.last_delivery_time from part p inner join measure me on " +
-                "p.measure_id = me.id inner join make ma on p.make_id = ma.id inner join part_type pt on p.part_type_id=pt.id " +
-                "WHERE serial_number like ('%s",serialNumber + "%')");
-        //Query query = entityManager.createNativeQuery(rawQuery,Part.class);
-        Query query = entityManager.createNativeQuery(rawQuery,Part.class);
-       //TypedQuery<Part> query = entityManager.createQuery(rawQuery, Part.class);
+        //String rawQuery = String.format("FROM Part WHERE serial_number like ('%s",serialNumber + "%')");
+        //TypedQuery<Part> query = entityManager.createQuery(rawQuery, Part.class);
+        String rawQuery = String.format("select p.id, p.quantity, me.name as measure_name, ma.name as make_name, pt.name as part_type_name, p.is_oem, p.last_purchase_price, p.serial_number, p.last_delivery_time from part p inner join measure me on p.measure_id = me.id inner join make ma on p.make_id = ma.id inner join part_type pt on p.part_type_id=pt.id where serial_number like ('%s",serialNumber + "%')");
+        Query query = entityManager.createNativeQuery(rawQuery);
         return query.getResultList();
     }
 
@@ -72,13 +68,13 @@ public class PartService {
         entityManager.persist(insertPart);
     }
 
-    public void deletePartByID(long id) throws SQLException{
+    public void deletePartByID(long id) throws SQLException {
         String queryString = String.format("DELETE FROM \"part\" WHERE id IN ('%d')", id);
         Query query= entityManager.createNativeQuery(queryString);
         query.executeUpdate();
     }
 
-    public void deletePartBySerialNumber(String serialNumber) throws SQLException{
+    public void deletePartBySerialNumber(String serialNumber) throws SQLException {
         String queryString = String.format("DELETE FROM \"part\" WHERE serial_number IN ('%s')", serialNumber);
         Query query= entityManager.createNativeQuery(queryString);
         query.executeUpdate();
