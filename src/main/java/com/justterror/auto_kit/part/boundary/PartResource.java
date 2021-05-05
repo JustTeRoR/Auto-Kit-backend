@@ -62,11 +62,10 @@ public class PartResource {
         logger.info("Get part with serial_number = " + serialNumber);
         List<Object[]> listResponse= partService.getAllBySerialNumber(serialNumber);
         String jsonResponse = ResponsesFactory.extendResponsePartBySerial(listResponse);
-        return Response
-                .status(Response.Status.OK)
-                .entity(jsonResponse)
-                .type(MediaType.APPLICATION_JSON)
-                .build();
+       return Response
+               .status(Response.Status.OK)
+               .entity(jsonResponse)
+               .build();
     }
 
     @GET

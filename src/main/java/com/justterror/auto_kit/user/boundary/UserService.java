@@ -1,5 +1,6 @@
 package com.justterror.auto_kit.user.boundary;
 
+import com.justterror.auto_kit.part.entity.Part;
 import com.justterror.auto_kit.security.Constants;
 import com.justterror.auto_kit.user.entity.User;
 import javax.ejb.Stateless;
@@ -46,8 +47,22 @@ public class UserService {
     }
 
     public void updateUsersPhone(long id, String phone) throws SQLException  {
+        logger.info("Updated phone number for user with id = %d" + id);
         String rawQuery = String.format("UPDATE users set phone=%s WHERE id=%d", phone, id);
         Query query = entityManager.createNativeQuery(rawQuery);
         query.executeUpdate();
+    }
+
+    public void updateUserToken(long id, String token) throws SQLException {
+        logger.info("Updated access_token for user with id = %d" + id);
+        String rawQuery = String.format("UPDATE users SET access_token = '%s' WHERE id = '%d'", token, id);
+        Query query = entityManager.createNativeQuery(rawQuery);
+        query.executeUpdate();
+    }
+
+    public User getUserById(long id) throws SQLException {
+        String rawQuery = String.format("FROM User WHERE id = %d", id);
+        TypedQuery<User> query = entityManager.createQuery(rawQuery, User.class);
+        return query.getSingleResult();
     }
 }

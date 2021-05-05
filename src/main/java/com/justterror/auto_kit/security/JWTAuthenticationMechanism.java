@@ -91,6 +91,10 @@ public class JWTAuthenticationMechanism implements HttpAuthenticationMechanism {
                 if (validateVkUser(version, access_token,user_ids)) {
                     String username = getExternalVKuserName(version, access_token, user_ids);
                     if (userService.isUserDuplicate(username)) {
+                        //Token can expire, so we updating it here after we checked that user comes from vk.com and it's VALID
+                        if (!userService.getUserById(Long.parseLong(user_ids)).getAccessToken().equals(access_token)) {
+                            userService.updateUserToken(Long.parseLong(user_ids), access_token);
+                        }
                         CredentialValidationResult result = identityStoreHandler.validate(new UsernamePasswordCredential(username, access_token));
                         return context.notifyContainerAboutLogin(result);
                     } else {
