@@ -1,6 +1,7 @@
 package com.justterror.auto_kit.replaceability.boundary;
 
 import com.justterror.auto_kit.replaceability.entity.Replaceability;
+import com.justterror.auto_kit.utils.ResponsesFactory;
 
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
@@ -51,12 +52,17 @@ public class ReplaceabilityResource {
     }
 
     @GET
-    @Path("/by_part_id")
+    @Path("/get_all_replacements")
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Replaceability> getByPartIdField(@QueryParam("part_id1") long partId1) {
-        logger.info("Get all replaceability mappings from replaceability table with part_id = " + partId1);
-        return replaceabilityService.getByPartID1(partId1);
+    public Response getByAnalogPartsBYPartId(@QueryParam("part_id1") long partId1) {
+        logger.info("Get all analog parts from for part_id1 = " + partId1);
+        List<Object[]> listResponse= replaceabilityService.getAllReplacementsForPartWithId(partId1);
+        String jsonResponse = ResponsesFactory.extendResponsePartBySerial(listResponse);
+        return Response
+                .status(Response.Status.OK)
+                .entity(jsonResponse)
+                .build();
     }
 
     @GET
