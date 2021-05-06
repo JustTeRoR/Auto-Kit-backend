@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 @Stateless
@@ -41,6 +42,19 @@ public class OrderService {
         String rawQuery = String.format("FROM Order WHERE user_id = %d", userId);
         TypedQuery<Order> query = entityManager.createQuery(rawQuery, Order.class);
         return query.getResultList();
+    }
+
+    public List<Object[]> getAllUserNotInitialStateOrders(long userId, String stateKey) {
+        String rawQuery = String.format("select o.id, o.order_status_id, os.key, os.title, o.price, o.creation_date, o.change_date, o.user_id from \"order\" o " +
+                "inner join order_status os on o.order_status_id = os.id where o.user_id=%d and os.key NOT IN ('%s')", userId, stateKey);
+        Query query = entityManager.createNativeQuery(rawQuery);
+        return query.getResultList();
+    }
+
+    public void updateOrderPrice(long id, BigDecimal price) {
+        String rawQuery = String.format(Locale.US,"UPDATE \"order\" SET price = %f WHERE id =%d", price, id);
+        Query query = entityManager.createNativeQuery(rawQuery);
+        query.executeUpdate();
     }
 
     public List<Order> getAllByStatusId(long statusId) {

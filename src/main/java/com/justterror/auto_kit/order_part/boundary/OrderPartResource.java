@@ -1,6 +1,7 @@
 package com.justterror.auto_kit.order_part.boundary;
 
 import com.justterror.auto_kit.order_part.entity.OrderPart;
+import com.justterror.auto_kit.utils.ResponsesFactory;
 
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
@@ -57,9 +58,14 @@ public class OrderPartResource {
     @Path("/by_order_id")
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
-    public List<OrderPart> getByOrderId(@QueryParam("order_id") long orderId) {
+    public Response getByOrderId(@QueryParam("order_id") long orderId) {
         logger.info("Get order_parts with order_id = " + orderId);
-        return orderPartService.getAllByOrderId(orderId);
+        List<Object[]> listResponse= orderPartService.getExtendedAllOrderPartsByOrderId(orderId);
+        String jsonResponse = ResponsesFactory.extendResponseOrderPartByOrderId(listResponse);
+        return Response
+                .status(Response.Status.OK)
+                .entity(jsonResponse)
+                .build();
     }
 
     @GET
@@ -90,25 +96,38 @@ public class OrderPartResource {
     }
 
     @POST
-    @Path("/insert")
+    @Path("/add_order_part")
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
-    public Response insertNewPartModelYear(@QueryParam("order_id") long orderId, @QueryParam("order_part_status_id") long orderPartStatusId,
-                                           @QueryParam("part_provider_id") long partProviderId, @QueryParam("purchase_price") BigDecimal purchasePrice,
-                                           @QueryParam("price") BigDecimal price, @QueryParam("labour_price") BigDecimal labourPrice,
-                                           @QueryParam("count") int count, @QueryParam("part_id") long partId) throws SQLException {
-        logger.log(Level.INFO, String.format("Inserting new order_part with parameters: order_id = %d and part_id = %d", orderId, partId));
+    public Response addOrderPart(@QueryParam("part_provider_id") long partProviderId, @QueryParam("part_id") long partId,
+                                           @QueryParam("user_ids") long userId) throws SQLException {
+        logger.log(Level.INFO, String.format("Adding new order_part with parameters: user_ids = %d and part_id = %d", userId, partId));
         try {
-            orderPartService.insertNewOrderPartTODB(orderId,orderPartStatusId,partProviderId, purchasePrice, price, labourPrice, count, partId);
+            orderPartService.addPartToShoppingCart(partId,userId,partProviderId);
             return Response.ok().build();
         } catch (SQLException exeption) {
-            logger.log(Level.WARNING, String.format("ERROR on inserting order_part with parameters: order_id = %d and part_id = %d", orderId, partId));
+            logger.log(Level.WARNING, String.format("ERROR on adding order_part with parameters: user_ids = %d and part_id = %d", userId, partId));
+            return Response.status(INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PUT
+    @Path("/update_count")
+    @RolesAllowed({USER, ADMIN})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateCountForOrderPart(@QueryParam("order_part_id") long orderPartId, @QueryParam("count") int count)  throws SQLException {
+        logger.log(Level.INFO, String.format("Update count for order_part with parameters: order_part_id = %d and count = %d", orderPartId, count));
+        try {
+            orderPartService.updateCountOfOrderPartById(orderPartId, count);
+            return Response.ok().build();
+        } catch (SQLException exception) {
+            logger.log(Level.WARNING, String.format("ERROR on updating count for order_part with parameters: order_part_id = %d and count = %d", orderPartId, count));
             return Response.status(INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @DELETE
-    @Path("/delete_by_id")
+    @Path("/delete_single_by_id")
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteOrderPartByID(@QueryParam("id") long id) throws SQLException{
@@ -123,16 +142,16 @@ public class OrderPartResource {
     }
 
     @DELETE
-    @Path("/delete_by_order_id")
+    @Path("/delete_multi_by_id")
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteOrderPartByOrderId(@QueryParam("order_id") long orderId) throws SQLException{
-        logger.log(Level.INFO, String.format("Deleting order_part with order_id = %d", orderId));
+    public Response deleteSeveralOrderPartById(@QueryParam("string_ids") String  orderIdsString) throws SQLException{
+        logger.log(Level.INFO, String.format("Deleting order_part with order_ids = %s", orderIdsString));
         try {
-            orderPartService.deleteOrderPartByOrderId(orderId);
+            orderPartService.deleteSeveralOrderPartById(orderIdsString);
             return Response.ok().build();
         } catch (SQLException exception) {
-            logger.log(Level.WARNING, String.format("ERROR on deleting order_part with order_id = %d", orderId));
+            logger.log(Level.WARNING, String.format("ERROR on deleting order_part with order_ids = %s", orderIdsString));
             return Response.status(INTERNAL_SERVER_ERROR).build();
         }
     }
