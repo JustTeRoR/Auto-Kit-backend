@@ -51,10 +51,11 @@ public class ResponsesFactory {
                 "   \"labourPrice\": %f,\n" +
                 "   \"count\": %d,\n" +
                 "   \"partId\": %d,\n" +
-                "   \"serialNumber\": \"%s\" \n }";
+                "   \"serialNumber\": \"%s\", \n" +
+                "   \"userId\": %d \n}";
         for (int i = 0; i < objList.size(); i++) {
             String wrapObject = String.format(Locale.US,singlePartTemplate, objList.get(i)[0],objList.get(i)[1], objList.get(i)[2], objList.get(i)[3],
-                    objList.get(i)[4], objList.get(i)[5], objList.get(i)[6],objList.get(i)[7],objList.get(i)[8], objList.get(i)[9], objList.get(i)[10], objList.get(i)[11]);
+                    objList.get(i)[4], objList.get(i)[5], objList.get(i)[6],objList.get(i)[7],objList.get(i)[8], objList.get(i)[9], objList.get(i)[10], objList.get(i)[11],objList.get(i)[12]);
             globalResponseForList = globalResponseForList.concat(wrapObject);
             if (i != objList.size() -1) {
                 globalResponseForList = globalResponseForList.concat(",");

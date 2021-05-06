@@ -70,11 +70,12 @@ public class OrderPartService {
     }
 
     //ORDER ID is SAME for all orderParts until they are moved with order next from initial state
-    public List<Object[]> getExtendedAllOrderPartsByOrderId(long orderId) {
+    public List<Object[]> getExtendedAllOrderPartsByUserId(long userId) {
         String rawQuery = String.format("select op.id, op.order_id, op.order_part_status_id, ops.title as order_part_status_title, " +
                 "op.part_provider_id, pp.name as part_provider_name, op.purchase_price,op.price, op.labour_price, op.count, op.part_id, " +
-                "p.serial_number from order_part op inner join order_part_status ops on op.order_part_status_id = ops.id inner join part_provider pp on op.part_provider_id = pp.id " +
-                "inner join part p on op.part_id=p.id where op.order_id =%d", orderId);
+                "p.serial_number, o.user_id from order_part op inner join order_part_status ops on op.order_part_status_id = ops.id " +
+                "inner join part_provider pp on op.part_provider_id = pp.id inner join part p on op.part_id=p.id " +
+                "inner join \"order\" o on op.order_id = o.id where o.user_id =%d", userId);
         Query query = entityManager.createNativeQuery(rawQuery);
         return query.getResultList();
     }
