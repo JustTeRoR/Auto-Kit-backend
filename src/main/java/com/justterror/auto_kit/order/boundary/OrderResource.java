@@ -1,6 +1,7 @@
 package com.justterror.auto_kit.order.boundary;
 
 import com.justterror.auto_kit.order.entity.Order;
+import com.justterror.auto_kit.utils.ResponsesFactory;
 
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
@@ -55,9 +56,14 @@ public class OrderResource {
     @Path("/by_user_id")
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Order> getByUserId(@QueryParam("user_id") long userId) {
+    public Response getByUserIdNotInitialState(@QueryParam("user_ids") long userId) throws SQLException {
         logger.info("Get all orders with user_id = " + userId);
-        return orderService.getAllByUserId(userId);
+        List<Object[]> listResponse= orderService.getAllUserNotInitialStateOrders(userId);
+        String jsonResponse = ResponsesFactory.extendResponseOrderByUserIdNotInitialState(listResponse);
+        return Response
+                .status(Response.Status.OK)
+                .entity(jsonResponse)
+                .build();
     }
 
     @GET
@@ -81,6 +87,21 @@ public class OrderResource {
             return Response.ok().build();
         } catch (SQLException exeption) {
             logger.log(Level.WARNING, String.format("ERROR on inserting order with parameters: user_id = %d", userId));
+            return Response.status(INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PUT
+    @Path("/cancel_by_user")
+    @RolesAllowed({USER, ADMIN})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createNewOrder(@QueryParam("order_id") long orderId) throws SQLException {
+        logger.log(Level.INFO, String.format("Cancel order by user request with parameters: id = %d", orderId));
+        try {
+            orderService.cancelByUserRequestOrder(orderId);
+            return Response.ok().build();
+        } catch (SQLException exeption) {
+            logger.log(Level.WARNING, String.format("ERROR on cancelling order by user request with parameters: id = %d", orderId));
             return Response.status(INTERNAL_SERVER_ERROR).build();
         }
     }

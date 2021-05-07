@@ -2,6 +2,10 @@ package com.justterror.auto_kit.order_part.boundary;
 
 import com.justterror.auto_kit.order.boundary.OrderService;
 import com.justterror.auto_kit.order_part.entity.OrderPart;
+import com.justterror.auto_kit.order_part_status.boundary.OrderPartStatusService;
+import com.justterror.auto_kit.order_part_status.entity.OrderPartStatus;
+import com.justterror.auto_kit.order_status.boundary.OrderStatusService;
+import com.justterror.auto_kit.order_status.entity.OrderStatus;
 import com.justterror.auto_kit.part.boundary.PartService;
 import com.justterror.auto_kit.part.entity.Part;
 import com.sun.tools.corba.se.idl.constExpr.Or;
@@ -30,6 +34,12 @@ public class OrderPartService {
 
     @Inject
     PartService partService;
+
+    @Inject
+    OrderPartStatusService orderPartStatusService;
+
+    @Inject
+    OrderStatusService orderStatusService;
 
     @PersistenceContext(name = "Auto-Kit")
     private EntityManager entityManager;
@@ -69,15 +79,40 @@ public class OrderPartService {
         return query.getResultList();
     }
 
-    //ORDER ID is SAME for all orderParts until they are moved with order next from initial state
-    public List<Object[]> getExtendedAllOrderPartsByUserId(long userId) {
+    public List<Object[]> getExtendedAllOrderPartsByOrderId(long orderId) {
+        OrderStatus orderStatus = orderStatusService.getByKey("Created");
         String rawQuery = String.format("select op.id, op.order_id, op.order_part_status_id, ops.title as order_part_status_title, " +
                 "op.part_provider_id, pp.name as part_provider_name, op.purchase_price,op.price, op.labour_price, op.count, op.part_id, " +
                 "p.serial_number, o.user_id from order_part op inner join order_part_status ops on op.order_part_status_id = ops.id " +
                 "inner join part_provider pp on op.part_provider_id = pp.id inner join part p on op.part_id=p.id " +
-                "inner join \"order\" o on op.order_id = o.id where o.user_id =%d", userId);
+                "inner join \"order\" o on op.order_id = o.id where o.id =%d", orderId);
         Query query = entityManager.createNativeQuery(rawQuery);
         return query.getResultList();
+    }
+
+    //ORDER ID is SAME for all orderParts until they are moved with order next from initial state
+    public List<Object[]> getExtendedAllOrderPartsByUserId(long userId) {
+        OrderStatus orderStatus = orderStatusService.getByKey("Created");
+        String rawQuery = String.format("select op.id, op.order_id, op.order_part_status_id, ops.title as order_part_status_title, " +
+                "op.part_provider_id, pp.name as part_provider_name, op.purchase_price,op.price, op.labour_price, op.count, op.part_id, " +
+                "p.serial_number, o.user_id from order_part op inner join order_part_status ops on op.order_part_status_id = ops.id " +
+                "inner join part_provider pp on op.part_provider_id = pp.id inner join part p on op.part_id=p.id " +
+                "inner join \"order\" o on op.order_id = o.id where o.user_id =%d and o.order_status_id =%d", userId, orderStatus.getId());
+        Query query = entityManager.createNativeQuery(rawQuery);
+        return query.getResultList();
+    }
+
+    //When user clicked Order button in shopping cart
+    public void putOrderPartsAndOrderTOOrderedStatusByOrderId(long orderId)  throws  SQLException {
+        OrderPartStatus orderPartStatus = orderPartStatusService.getByKey("Ordered");
+        String rawQuery = String.format("UPDATE order_part SET order_part_status_id = %d WHERE order_id = %d", orderPartStatus.getId(), orderId);
+        Query query = entityManager.createNativeQuery(rawQuery);
+        query.executeUpdate();
+        //Also updating orderState
+        OrderStatus orderStatus = orderStatusService.getByKey("Ordered");
+        String rawQueryOrder = String.format("UPDATE \"order\" SET order_status_id = %d WHERE id = %d", orderStatus.getId(), orderId);
+        Query queryOrder = entityManager.createNativeQuery(rawQueryOrder);
+        queryOrder.executeUpdate();
     }
 
     public void addPartToShoppingCart(long partId, long userId, long partProviderId) throws SQLException {

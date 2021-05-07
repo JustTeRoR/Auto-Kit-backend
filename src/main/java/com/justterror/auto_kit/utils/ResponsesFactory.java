@@ -64,4 +64,28 @@ public class ResponsesFactory {
         globalResponseForList = globalResponseForList.concat("]");
         return globalResponseForList;
     }
+
+    public static String extendResponseOrderByUserIdNotInitialState(List<Object[]> objList) {
+        String globalResponseForList = "[\n ";
+        String singleOrderTemplate = "{ \n" +
+                "   \"id\": %d,\n" +
+                "   \"orderStatusId\": %d,\n" +
+                "   \"statusKey\": \"%s\",\n" +
+                "   \"statusName\": \"%s\",\n" +
+                "   \"price\": %f,\n" +
+                "   \"creationDate\": \"%s\",\n" +
+                "   \"changeDate\": \"%s\",\n" +
+                "   \"userId\": %d,\n" +
+                "   \"userName\": \"%s\" \n}";
+        for (int i = 0; i < objList.size(); i++) {
+            String wrapObject = String.format(Locale.US,singleOrderTemplate, objList.get(i)[0],objList.get(i)[1], objList.get(i)[2], objList.get(i)[3],
+                    objList.get(i)[4], objList.get(i)[5], objList.get(i)[6],objList.get(i)[7],objList.get(i)[8]);
+            globalResponseForList = globalResponseForList.concat(wrapObject);
+            if (i != objList.size() -1) {
+                globalResponseForList = globalResponseForList.concat(",");
+            }
+        }
+        globalResponseForList = globalResponseForList.concat("]");
+        return globalResponseForList;
+    }
 }

@@ -2,6 +2,8 @@ package com.justterror.auto_kit.order.boundary;
 
 
 import com.justterror.auto_kit.order.entity.Order;
+import com.justterror.auto_kit.order_status.boundary.OrderStatusService;
+import com.justterror.auto_kit.order_status.entity.OrderStatus;
 import com.sun.tools.corba.se.idl.constExpr.Or;
 
 import javax.ejb.Stateless;
@@ -24,6 +26,9 @@ public class OrderService {
     @Inject
     Logger logger;
 
+    @Inject
+    OrderStatusService orderStatusService;
+
     @PersistenceContext(name = "Auto-Kit")
     private EntityManager entityManager;
 
@@ -44,11 +49,19 @@ public class OrderService {
         return query.getResultList();
     }
 
-    public List<Object[]> getAllUserNotInitialStateOrders(long userId, String stateKey) {
-        String rawQuery = String.format("select o.id, o.order_status_id, os.key, os.title, o.price, o.creation_date, o.change_date, o.user_id from \"order\" o " +
-                "inner join order_status os on o.order_status_id = os.id where o.user_id=%d and os.key NOT IN ('%s')", userId, stateKey);
+    public List<Object[]> getAllUserNotInitialStateOrders(long userId) throws SQLException {
+        OrderStatus initialStateOrderStatus = orderStatusService.getByKey("Created");
+        String rawQuery = String.format("select o.id, o.order_status_id, os.key, os.title, o.price, o.creation_date, o.change_date, o.user_id, u.username from \"order\" o " +
+                "inner join order_status os on o.order_status_id = os.id inner join users u on o.user_id = u.id where o.user_id=%d and os.key != '%s'", userId, initialStateOrderStatus.getKey());
         Query query = entityManager.createNativeQuery(rawQuery);
         return query.getResultList();
+    }
+
+    public  void cancelByUserRequestOrder(long orderId) throws SQLException {
+        OrderStatus cancelledByUserStatus = orderStatusService.getByKey("Cancelled by user");
+        String rawQuery = String.format(Locale.US,"UPDATE \"order\" SET order_status_id = %d WHERE id =%d", cancelledByUserStatus.getId(), orderId);
+        Query query = entityManager.createNativeQuery(rawQuery);
+        query.executeUpdate();
     }
 
     public void updateOrderPrice(long id, BigDecimal price) {
@@ -73,5 +86,4 @@ public class OrderService {
         Query query= entityManager.createNativeQuery(queryString);
         query.executeUpdate();
     }
-
 }
