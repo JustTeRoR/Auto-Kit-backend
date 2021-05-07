@@ -65,7 +65,7 @@ public class OrderPartResource {
         return Response
                 .status(Response.Status.OK)
                 .entity(jsonResponse)
-                .build();
+                .build(); xw
     }
 
     @GET

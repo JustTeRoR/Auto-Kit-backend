@@ -96,7 +96,14 @@ public class OrderPartService {
         //TODO:: To improve creation, let user select partProvider + change logic of price setting and mb count.
         OrderPart insertOrderPart = new OrderPart(Long.parseLong(initialStateOrders.get(0)[0].toString()), 1, partProviderId, toBeAddedPart.getLastPurchasePrice(), toBeAddedPart.getLastPurchasePrice().add(BigDecimal.valueOf(1500)), BigDecimal.valueOf(1500), 1, partId);
         entityManager.persist(insertOrderPart);
-        orderService.updateOrderPrice(insertOrderPart.getOrderId(), insertOrderPart.getPrice());
+        List<OrderPart> relatedOrderParts = getAllByOrderId(insertOrderPart.getOrderId());
+
+
+        BigDecimal finalOrderPrice = BigDecimal.valueOf(0);
+        for (int i = 0; i < relatedOrderParts.size(); i++) {
+            finalOrderPrice = finalOrderPrice.add(relatedOrderParts.get(i).getPrice());
+        }
+        orderService.updateOrderPrice(insertOrderPart.getOrderId(), finalOrderPrice);
     }
 
     public void updateCountOfOrderPartById(long id, int count)  throws SQLException{
