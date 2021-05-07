@@ -58,9 +58,23 @@ public class OrderPartResource {
     @Path("/by_user_ids")
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getByOrderId(@QueryParam("user_ids") long userId) {
+    public Response getByUserId(@QueryParam("user_ids") long userId) {
         logger.info("Get order_parts with user_id = " + userId);
         List<Object[]> listResponse= orderPartService.getExtendedAllOrderPartsByUserId(userId);
+        String jsonResponse = ResponsesFactory.extendResponseOrderPartByOrderId(listResponse);
+        return Response
+                .status(Response.Status.OK)
+                .entity(jsonResponse)
+                .build();
+    }
+
+    @GET
+    @Path("/by_order_id")
+    @RolesAllowed({USER, ADMIN})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getByOrderId(@QueryParam("order_id") long orderId) {
+        logger.info("Get order_parts with order_id = " + orderId);
+        List<Object[]> listResponse= orderPartService.getExtendedAllOrderPartsByOrderId(orderId);
         String jsonResponse = ResponsesFactory.extendResponseOrderPartByOrderId(listResponse);
         return Response
                 .status(Response.Status.OK)
