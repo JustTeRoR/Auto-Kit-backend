@@ -34,6 +34,8 @@ public class Order {
     @NotNull
     private long userId;
 
+    public Order() {}
+
     public Order(long orderStatusId, BigDecimal price, LocalDateTime creationDate, LocalDateTime changeDate, long userId) {
         this.orderStatusId = orderStatusId;
         this.price = price;

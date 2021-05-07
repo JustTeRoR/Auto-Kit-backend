@@ -126,6 +126,21 @@ public class OrderPartResource {
         }
     }
 
+    @PUT
+    @Path("/perform_order")
+    @RolesAllowed({USER, ADMIN})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateCountForOrderPart(@QueryParam("order_id") long orderId)  throws SQLException {
+        logger.log(Level.INFO, String.format("Perform order in Ordered state with id = %d", orderId));
+        try {
+            orderPartService.putOrderPartsAndOrderTOOrderedStatusByOrderId(orderId);
+            return Response.ok().build();
+        } catch (SQLException exception) {
+            logger.log(Level.WARNING, String.format("ERROR on performing order in Ordered state with id = %d", orderId));
+            return Response.status(INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     @DELETE
     @Path("/delete_single_by_id")
     @RolesAllowed({USER, ADMIN})
