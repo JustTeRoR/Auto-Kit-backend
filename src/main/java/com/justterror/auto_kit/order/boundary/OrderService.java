@@ -2,6 +2,8 @@ package com.justterror.auto_kit.order.boundary;
 
 
 import com.justterror.auto_kit.order.entity.Order;
+import com.justterror.auto_kit.order_part_status.boundary.OrderPartStatusService;
+import com.justterror.auto_kit.order_part_status.entity.OrderPartStatus;
 import com.justterror.auto_kit.order_status.boundary.OrderStatusService;
 import com.justterror.auto_kit.order_status.entity.OrderStatus;
 import com.sun.tools.corba.se.idl.constExpr.Or;
@@ -28,6 +30,9 @@ public class OrderService {
 
     @Inject
     OrderStatusService orderStatusService;
+
+    @Inject
+    OrderPartStatusService orderPartStatusService;
 
     @PersistenceContext(name = "Auto-Kit")
     private EntityManager entityManager;
@@ -59,9 +64,14 @@ public class OrderService {
 
     public  void cancelByUserRequestOrder(long orderId) throws SQLException {
         OrderStatus cancelledByUserStatus = orderStatusService.getByKey("Cancelled by user");
+        OrderPartStatus cancelledByUserOrderPartStatus = orderPartStatusService.getByKey("Cancelled by user");
         String rawQuery = String.format(Locale.US,"UPDATE \"order\" SET order_status_id = %d WHERE id =%d", cancelledByUserStatus.getId(), orderId);
         Query query = entityManager.createNativeQuery(rawQuery);
         query.executeUpdate();
+
+        String rawQueryOrderParts = String.format(Locale.US,"UPDATE order_part SET order_part_status_id = %d WHERE order_id =%d", cancelledByUserOrderPartStatus.getId(), orderId);
+        Query queryOrderParts = entityManager.createNativeQuery(rawQueryOrderParts);
+        queryOrderParts.executeUpdate();
     }
 
     public void updateOrderPrice(long id, BigDecimal price) {
