@@ -31,6 +31,8 @@ public class Model {
         this. trimName = trimName;
     }
 
+    public Model() {}
+
     public long getId() {
         return id;
     }

@@ -18,6 +18,13 @@ public class Make {
     @NotNull
     private String name;
 
+    public Make() {}
+    public Make(long id, long vpicId, String name) {
+        this.id = id;
+        this.name = name;
+        this.vpicId = vpicId;
+    }
+
     public long getId() {
         return id;
     }

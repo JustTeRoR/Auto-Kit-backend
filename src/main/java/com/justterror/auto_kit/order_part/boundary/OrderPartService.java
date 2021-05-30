@@ -136,12 +136,14 @@ public class OrderPartService {
 
         BigDecimal finalOrderPrice = BigDecimal.valueOf(0);
         for (int i = 0; i < relatedOrderParts.size(); i++) {
-            finalOrderPrice = finalOrderPrice.add(relatedOrderParts.get(i).getPrice());
+            finalOrderPrice = finalOrderPrice.add(relatedOrderParts.get(i).getPrice().multiply(BigDecimal.valueOf(relatedOrderParts.get(i).getCount())));
         }
         orderService.updateOrderPrice(insertOrderPart.getOrderId(), finalOrderPrice);
     }
 
-    public void updateCountOfOrderPartById(long id, int count)  throws SQLException{
+    public void updateCountOfOrderPartById(long id, int count)  throws SQLException {
+        OrderPart updatableOrderPart = getById(id);
+
         String rawQuery = String.format(Locale.US,"UPDATE order_part SET count = %d WHERE id = %d", count, id);
         Query query = entityManager.createNativeQuery(rawQuery);
         query.executeUpdate();

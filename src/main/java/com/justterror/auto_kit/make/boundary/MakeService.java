@@ -7,6 +7,9 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -29,15 +32,22 @@ public class MakeService {
         return query.getResultList();
     }
 
-    public List<Make> getAllByName(String name) {
+    public Make getAllByName(String name) {
         String rawQuery = String.format("FROM Make WHERE name = '%s'", name);
         TypedQuery<Make> query = entityManager.createQuery(rawQuery, Make.class);
-        return query.getResultList();
+        return query.getSingleResult();
     }
 
     public List<Make> getAllByVpicId(long vpicId) {
         String rawQuery = String.format("FROM Make WHERE vpic_id = %d", vpicId);
         TypedQuery<Make> query = entityManager.createQuery(rawQuery, Make.class);
         return query.getResultList();
+    }
+
+    public void createNewMakeInDB(String name) throws SQLException {
+        List<Make> allMakes = getAll();
+        //TODO:: TO change or remove setting of vpic_id from constant 1
+        Make insertMake = new Make(allMakes.size() + 1, 1, name);
+        entityManager.persist(insertMake);
     }
 }
