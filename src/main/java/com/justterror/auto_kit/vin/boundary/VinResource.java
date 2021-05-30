@@ -6,9 +6,12 @@ import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.security.enterprise.SecurityContext;
+import javax.transaction.*;
+import javax.transaction.NotSupportedException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
@@ -60,18 +63,19 @@ public class VinResource {
     }
 
     @POST
-    @Path("/insert")
+    @Path("/parseVin")
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
-    public Response insertNewVin(@QueryParam("vin") String vin, @QueryParam("model_year_id") long modelYearID ) throws SQLException {
-        logger.log(Level.INFO, String.format("Inserting new vin with parameters: vin = %s, model_year_id = %d",
-                vin, modelYearID));
+    public Response insertNewVin(@QueryParam("vin") String vin, @QueryParam("user_ids") long userId ) throws SQLException, IOException {
+        logger.log(Level.INFO, String.format("Parsing vin which equals = %s", vin));
         try {
-            vinService.insertNewVinTODB(vin, modelYearID);
-            return Response.ok().build();
+            String response = vinService.parseRequestedVIN(vin, userId);
+            return Response
+                    .status(Response.Status.OK)
+                    .entity(response)
+                    .build();
         } catch (SQLException exeption) {
-            logger.log(Level.WARNING, String.format("ERROR on insterting new vin with parameters: vin = %s, model_year_id = %d",
-                  vin, modelYearID));
+            logger.log(Level.WARNING, String.format("ERROR on Parsing vin which equals = %s", vin));
             return Response.status(INTERNAL_SERVER_ERROR).build();
         }
     }

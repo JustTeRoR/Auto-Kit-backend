@@ -53,7 +53,7 @@ public class MakeResource {
     @Path("/by_name")
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
-    public Make getByName(@QueryParam("name") String name) {
+    public List<Make> getByName(@QueryParam("name") String name) {
         logger.info("Get make with name = " + name);
         return makeService.getAllByName(name);
     }

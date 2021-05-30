@@ -51,14 +51,11 @@ public class ModelService {
         return query.getResultList();
     }
 
-    public void insertModelTODB(String name) throws SQLException {
-       /* String queryString = String.format("INSERT INTO \"model\" (make_id, vpic_id, name, trim_name) VALUES (%d, %d, %s, %s)",
-                make_id, vpicId, name, trimName);
-        Query query= entityManager.createNativeQuery(queryString);
-        query.executeUpdate();*/
-        Make relevantMake = makeService.getAllByName(name);
+    public void insertModelTODB(String nameModel, long  makeId) throws SQLException {
         //TODO:: TO change or remove setting of vpic_id from constant 1 + to think about setting another trimName
-        Model insertModel = new Model(relevantMake.getId(), 1, name, name);
+        List<Model> allModels = getAll();
+        long newId = allModels.size() + 1;
+        Model insertModel = new Model(newId, makeId, 1, nameModel, nameModel);
         entityManager.persist(insertModel);
     }
 

@@ -8,7 +8,6 @@ import javax.validation.constraints.NotNull;
 public class Make {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name="vpic_id")

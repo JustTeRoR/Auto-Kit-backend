@@ -8,7 +8,6 @@ import javax.validation.constraints.NotNull;
 public class Model {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name="make_id")
@@ -24,7 +23,8 @@ public class Model {
     @Column(name="trim_name")
     private String trimName;
 
-    public Model(long makeId, long vpicId, String name, String trimName) {
+    public Model(long id, long makeId, long vpicId, String name, String trimName) {
+        this.id = id;
         this.makeId = makeId;
         this.vpicId = vpicId;
         this.name = name;

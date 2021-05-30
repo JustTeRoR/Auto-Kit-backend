@@ -75,14 +75,13 @@ public class ModelResource {
     @Path("/insert")
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createNewOrder(@QueryParam("make_id") long makeId, @QueryParam("vpic_id") long vpicId,
-                                   @QueryParam("name") String name, @QueryParam("trim_name") String trim_name ) throws SQLException {
-        logger.log(Level.INFO, String.format("Inserting new model with parameters: make_id = %d, name = %s", makeId, name));
+    public Response createNewOrder(@QueryParam("makeId") long makeId, @QueryParam("nameModel") String nameModel) throws SQLException {
+        logger.log(Level.INFO, String.format("Inserting new model with parameters: name = %s", nameModel));
         try {
-            modelService.insertModelTODB(makeId,vpicId,name,trim_name);
+            modelService.insertModelTODB(nameModel, makeId);
             return Response.ok().build();
-        } catch (SQLException exeption) {
-            logger.log(Level.WARNING, String.format("ERROR on inserting model with parameters: make_id = %d, name = %s", makeId, name));
+        } catch (SQLException exception) {
+            logger.log(Level.WARNING, String.format("ERROR on inserting model with parameters: name = %s", nameModel));
             return Response.status(INTERNAL_SERVER_ERROR).build();
         }
     }

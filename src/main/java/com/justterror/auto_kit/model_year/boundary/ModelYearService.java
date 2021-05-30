@@ -1,5 +1,7 @@
 package com.justterror.auto_kit.model_year.boundary;
 
+import com.justterror.auto_kit.model.boundary.ModelService;
+import com.justterror.auto_kit.model.entity.Model;
 import com.justterror.auto_kit.model_year.entity.ModelYear;
 
 import javax.ejb.Stateless;
@@ -16,6 +18,9 @@ import java.util.logging.Logger;
 public class ModelYearService {
     @Inject
     Logger logger;
+
+    @Inject
+    ModelService modelService;
 
     @PersistenceContext(name = "Auto-Kit")
     private EntityManager entityManager;
@@ -43,7 +48,11 @@ public class ModelYearService {
         return query.getResultList();
     }
 
-    //TODO:: To implement method for insertion (read how to transfer json objects in such situations)
+    public void insertModelYearTODB(int year, long modelId, long user_id, String carDetailsJson, String scheduleJson) throws SQLException {
+        //TODO:: TO change or remove setting of vpic_id from constant 1 + to think about setting another trimName
+        ModelYear insertModelYear = new ModelYear(year, carDetailsJson, scheduleJson, modelId, 1, user_id);
+        entityManager.persist(insertModelYear);
+    }
 
     public void deleteModelYearByID(long id) throws SQLException {
         String queryString = String.format("DELETE FROM \"model_year\" WHERE id IN ('%d')", id);

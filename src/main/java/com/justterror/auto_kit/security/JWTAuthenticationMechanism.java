@@ -51,35 +51,6 @@ public class JWTAuthenticationMechanism implements HttpAuthenticationMechanism {
 
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request, HttpServletResponse response, HttpMessageContext context) {
-/*
-        logger.log(Level.INFO, "validateRequest: {0}", request.getRequestURI());
-       //TODO:: In further updates remove password from url string
-        String name = request.getParameter("name");
-        String password = request.getParameter("password");
-        String token = extractToken(context);
-
-            if (name != null && password != null) {
-            logger.log(Level.INFO, "credentials : {0}, {1}", new String[]{name, password});
-            // validation of the credential using the identity store
-            CredentialValidationResult result = identityStoreHandler.validate(new UsernamePasswordCredential(name, password));
-            if (result.getStatus() == CredentialValidationResult.Status.VALID) {
-                // Communicate the details of the authenticated user to the container and return SUCCESS.
-                return createToken(result, context);
-            }
-            // if the authentication failed, we return the unauthorized status in the http response
-                return context.responseUnauthorized();
-        } else if (token != null) {
-            // validation of the jwt credential
-            return validateToken(token, context);
-        } else if (context.isProtected()) {
-            // A protected resource is a resource for which a constraint has been defined.
-            // if there are no credentials and the resource is protected, we response with unauthorized status
-            return context.responseUnauthorized();
-        }
-        // there are no credentials AND the resource is not protected,
-        // SO Instructs the container to "do nothing"
-        return context.doNothing();
-        */
         logger.log(Level.INFO, "validateRequest: {0}", request.getRequestURI());
         String user_ids = request.getParameter("user_ids");
         String access_token = request.getParameter("access_token");
