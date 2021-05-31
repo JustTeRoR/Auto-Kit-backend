@@ -90,7 +90,7 @@ public class VinService {
     }
 
 
-    
+
     public String  parseRequestedVIN(String vin, long userId) throws IOException, SQLException {
         try {
             Vin searchIfExists = getByVin(vin);
@@ -114,8 +114,8 @@ public class VinService {
             }
             in.close();
             String responseString = response.toString();
-
-            String specificationRegexp = "\"(specification)\":((\\ \"|[^}].*)*)";
+            //TODO:  removed from regexp first * after dot, check if now works better
+            String specificationRegexp = "\"(specification)\":((\\ \"|[^}].)*)";
             String vinRegexp = "\"(vin)\":\"((\\ \"|[^\"])*)";
 
             Pattern specificationPattern = Pattern.compile(specificationRegexp);

@@ -54,9 +54,21 @@ public class ModelYearResource {
     @Path("/by_user_id")
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
-    public List<ModelYear> getByUserId(@QueryParam("user_id") long userId) {
+    public Response getByUserId(@QueryParam("user_ids") long userId) {
         logger.info("Get all ModelYear with user_id = " + userId);
-        return modelYearService.getAllByUserId(userId);
+        List<ModelYear> userCars = modelYearService.getAllByUserId(userId);
+        String response = "[";
+        for (int i = 0; i < userCars.size(); i++) {
+            response = response.concat(userCars.get(i).getCarDetailsJson());
+            if (i != userCars.size() - 1) {
+                response = response.concat(",");
+            }
+        }
+        response = response.concat("]");
+        return Response
+                .status(Response.Status.OK)
+                .entity(response)
+                .build();
     }
 
     @GET
