@@ -88,4 +88,29 @@ public class ResponsesFactory {
         globalResponseForList = globalResponseForList.concat("]");
         return globalResponseForList;
     }
+
+    public static String extendResponsePartModelYearByCategoryAndModelYearId(List<Object[]> objList) {
+        String globalResponseForList = "[\n ";
+        String singleOrderTemplate = "{ \n" +
+                "   \"id\": %d,\n" +
+                "   \"modelYearId\": %d,\n" +
+                "   \"partTypeId\": %d,\n" +
+                "   \"partTypeName\": \"%s\",\n" +
+                "   \"measure_id\": %d,\n" +
+                "   \"oem_part_id\": %d,\n" +
+                "   \"labour\": %d,\n" +
+                "   \"quantity\": %d,\n" +
+                "   \"partName\": \"%s\",\n" +
+                "   \"serialNumber\": \"%s\"\n}";
+        for (int i = 0; i < objList.size(); i++) {
+            String wrapObject = String.format(Locale.US,singleOrderTemplate, objList.get(i)[0],objList.get(i)[1], objList.get(i)[2], objList.get(i)[3],
+                    objList.get(i)[4], objList.get(i)[5], objList.get(i)[6],objList.get(i)[7],objList.get(i)[8],objList.get(i)[9]);
+            globalResponseForList = globalResponseForList.concat(wrapObject);
+            if (i != objList.size() -1) {
+                globalResponseForList = globalResponseForList.concat(",");
+            }
+        }
+        globalResponseForList = globalResponseForList.concat("]");
+        return globalResponseForList;
+    }
 }

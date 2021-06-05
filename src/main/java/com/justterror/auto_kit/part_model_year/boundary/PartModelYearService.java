@@ -56,10 +56,20 @@ public class PartModelYearService {
         return query.getResultList();
     }
 
+    public List<Object[]> getAllByCategoryAndPartModelYear(Long partTypeId, Long modelYearId) {
+        String rawQuery = String.format("select pmy.id, pmy.model_year_id, pmy.part_type_id, pt.name as part_type_name, pmy.measure_id, pmy.oem_part_id, pmy.labour, pmy.quantity, pmy.part_name, \n" +
+                "p.serial_number as serial_number\n" +
+                "from part_model_year pmy\n" +
+                "inner join part p on pmy.oem_part_id = p.id inner join part_type pt on pmy.part_type_id = pt.id\n" +
+                "where pmy.part_type_id = %d and pmy.model_year_id = %d", partTypeId, modelYearId);
+        Query query = entityManager.createNativeQuery(rawQuery);
+        return query.getResultList();
+    }
+
     public void insertNewPartModelYearTODB(long model_year_id, long part_type_id, long measure_id, long oem_part_id,
-                                           int labour, int quantity) throws SQLException {
-        String queryString = String.format("INSERT INTO \"part_model_year\" (model_year_id, part_type_id, measure_id, oem_part_id, labour, quantity) VALUES (%d, %d, %d, %d, %d, %d)",
-                model_year_id, part_type_id, measure_id, oem_part_id, labour, quantity);
+                                           int labour, int quantity, String partName) throws SQLException {
+        String queryString = String.format("INSERT INTO \"part_model_year\" (model_year_id, part_type_id, measure_id, oem_part_id, labour, quantity, part_name) VALUES (%d, %d, %d, %d, %d, %d, %s)",
+                model_year_id, part_type_id, measure_id, oem_part_id, labour, quantity, partName);
         Query query= entityManager.createNativeQuery(queryString);
         query.executeUpdate();
     }

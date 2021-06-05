@@ -115,7 +115,7 @@ public class VinService {
             in.close();
             String responseString = response.toString();
             //TODO:  removed from regexp first * after dot, check if now works better
-            String specificationRegexp = "\"(specification)\":((\\ \"|[^}].)*)";
+            String specificationRegexp = "\"(specification)\":((\\ \"|[^}].)*.)";
             String vinRegexp = "\"(vin)\":\"((\\ \"|[^\"])*)";
 
             Pattern specificationPattern = Pattern.compile(specificationRegexp);
