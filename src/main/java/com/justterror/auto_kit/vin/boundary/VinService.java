@@ -1,6 +1,5 @@
 package com.justterror.auto_kit.vin.boundary;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.justterror.auto_kit.make.boundary.MakeService;
 import com.justterror.auto_kit.make.entity.Make;
 import com.justterror.auto_kit.model.boundary.ModelService;
@@ -9,24 +8,13 @@ import com.justterror.auto_kit.model_year.boundary.ModelYearService;
 import com.justterror.auto_kit.model_year.entity.ModelYear;
 import com.justterror.auto_kit.security.Constants;
 import com.justterror.auto_kit.vin.entity.Vin;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.jws.WebParam;
 import javax.persistence.*;
-import javax.transaction.*;
-import javax.transaction.RollbackException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
@@ -84,9 +72,12 @@ public class VinService {
     }
 
     public void deleteVinByVin(String vin) throws SQLException {
+        Vin requestedVin = getByVin(vin);
+        Long requestedModelYearId = requestedVin.getModelYearID();
         String queryString = String.format("DELETE FROM \"vin\" WHERE vin IN ('%s')", vin);
         Query query= entityManager.createNativeQuery(queryString);
         query.executeUpdate();
+        modelYearService.deleteModelYearByID(requestedModelYearId);
     }
 
 
