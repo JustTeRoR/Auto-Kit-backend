@@ -36,6 +36,17 @@ public class ModelYear {
     @NotNull
     private long userId;
 
+    public ModelYear() {}
+
+    public ModelYear(int year, String carDetailsJson, String scheduleJson, long modelId, int epicId, long userId) {
+        this.year = year;
+        this.carDetailsJson = carDetailsJson;
+        this.scheduleJson = scheduleJson;
+        this.modelId = modelId;
+        this.epicId = epicId;
+        this.userId = userId;
+    }
+
     public long getId() {
         return id;
     }

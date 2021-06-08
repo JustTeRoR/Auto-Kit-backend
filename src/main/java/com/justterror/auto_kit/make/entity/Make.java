@@ -8,7 +8,6 @@ import javax.validation.constraints.NotNull;
 public class Make {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name="vpic_id")
@@ -17,6 +16,13 @@ public class Make {
     @Column(name = "name")
     @NotNull
     private String name;
+
+    public Make() {}
+    public Make(long id, long vpicId, String name) {
+        this.id = id;
+        this.name = name;
+        this.vpicId = vpicId;
+    }
 
     public long getId() {
         return id;

@@ -36,6 +36,10 @@ public class PartModelYear {
     @NotNull
     private int quantity;
 
+    @Column(name="part_name")
+    @NotNull
+    private String partName;
+
     public long getId() {
         return id;
     }
@@ -92,6 +96,14 @@ public class PartModelYear {
         this.quantity = quantity;
     }
 
+    public String getPartName() {
+        return partName;
+    }
+
+    public void setPartName(String partName) {
+        this.partName = partName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -105,7 +117,8 @@ public class PartModelYear {
         if (measureId != that.measureId) return false;
         if (oemPartId != that.oemPartId) return false;
         if (labour != that.labour) return false;
-        return quantity == that.quantity;
+        if (quantity != that.quantity) return false;
+        return partName.equals(that.partName);
     }
 
     @Override
@@ -117,6 +130,7 @@ public class PartModelYear {
         result = 31 * result + (int) (oemPartId ^ (oemPartId >>> 32));
         result = 31 * result + labour;
         result = 31 * result + quantity;
+        result = 31 * result + partName.hashCode();
         return result;
     }
 
@@ -130,6 +144,7 @@ public class PartModelYear {
                 ", oemPartId=" + oemPartId +
                 ", labour=" + labour +
                 ", quantity=" + quantity +
+                ", partName='" + partName + '\'' +
                 '}';
     }
 }

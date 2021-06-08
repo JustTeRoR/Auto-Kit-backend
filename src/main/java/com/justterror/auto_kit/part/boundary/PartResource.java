@@ -1,6 +1,7 @@
 package com.justterror.auto_kit.part.boundary;
 
 import com.justterror.auto_kit.part.entity.Part;
+import com.justterror.auto_kit.utils.ResponsesFactory;
 
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
@@ -57,9 +58,14 @@ public class PartResource {
     @Path("/by_serial_number")
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Part> getByModelYearId(@QueryParam("serial_number") String serialNumber) {
+    public Response getByModelYearId(@QueryParam("serial_number") String serialNumber) {
         logger.info("Get part with serial_number = " + serialNumber);
-        return partService.getAllBySerialNumber(serialNumber);
+        List<Object[]> listResponse= partService.getAllBySerialNumber(serialNumber);
+        String jsonResponse = ResponsesFactory.extendResponsePartBySerial(listResponse);
+       return Response
+               .status(Response.Status.OK)
+               .entity(jsonResponse)
+               .build();
     }
 
     @GET

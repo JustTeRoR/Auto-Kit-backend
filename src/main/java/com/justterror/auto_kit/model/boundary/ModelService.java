@@ -1,5 +1,7 @@
 package com.justterror.auto_kit.model.boundary;
 
+import com.justterror.auto_kit.make.boundary.MakeService;
+import com.justterror.auto_kit.make.entity.Make;
 import com.justterror.auto_kit.model.entity.Model;
 
 import javax.ejb.Stateless;
@@ -19,6 +21,9 @@ public class ModelService {
 
     @Inject
     Logger logger;
+
+    @Inject
+    MakeService makeService;
 
     @PersistenceContext(name = "Auto-Kit")
     private EntityManager entityManager;
@@ -46,12 +51,11 @@ public class ModelService {
         return query.getResultList();
     }
 
-    public void insertModelTODB(long make_id, long vpicId, String name, String trimName) throws SQLException {
-       /* String queryString = String.format("INSERT INTO \"model\" (make_id, vpic_id, name, trim_name) VALUES (%d, %d, %s, %s)",
-                make_id, vpicId, name, trimName);
-        Query query= entityManager.createNativeQuery(queryString);
-        query.executeUpdate();*/
-        Model insertModel = new Model(make_id, vpicId, name, trimName);
+    public void insertModelTODB(String nameModel, long  makeId) throws SQLException {
+        //TODO:: TO change or remove setting of vpic_id from constant 1 + to think about setting another trimName
+        List<Model> allModels = getAll();
+        long newId = allModels.size() + 1;
+        Model insertModel = new Model(newId, makeId, 1, nameModel, nameModel);
         entityManager.persist(insertModel);
     }
 

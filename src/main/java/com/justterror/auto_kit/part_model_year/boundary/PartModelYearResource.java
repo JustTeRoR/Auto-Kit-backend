@@ -1,6 +1,7 @@
 package com.justterror.auto_kit.part_model_year.boundary;
 
 import com.justterror.auto_kit.part_model_year.entity.PartModelYear;
+import com.justterror.auto_kit.utils.ResponsesFactory;
 
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
@@ -86,16 +87,30 @@ public class PartModelYearResource {
         return partModelYearService.getAllByOEMPartId(oemPartId);
     }
 
+    @GET
+    @Path("/by_part_type_and_model_year")
+    @RolesAllowed({USER, ADMIN})
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getByModelYearId(@QueryParam("part_type_id") long partTypeId, @QueryParam("model_year_id") long modelYearId) {
+        logger.info("Get part with part_type_id = " + partTypeId + " and model_year_id = " + modelYearId);
+        List<Object[]> listResponse = partModelYearService.getAllByCategoryAndPartModelYear(partTypeId, modelYearId);
+        String jsonResponse = ResponsesFactory.extendResponsePartModelYearByCategoryAndModelYearId(listResponse);
+        return Response
+                .status(Response.Status.OK)
+                .entity(jsonResponse)
+                .build();
+    }
+
     @POST
     @Path("/insert")
     @RolesAllowed({USER, ADMIN})
     @Produces(MediaType.APPLICATION_JSON)
     public Response insertNewPartModelYear(@QueryParam("model_year_id") long modelYearId, @QueryParam("part_type_id") long partTypeId,
                                       @QueryParam("measure_id") long measureId, @QueryParam("oem_part_id") long oemPartId,
-                                           @QueryParam("labour") int labour, @QueryParam("quantity") int quantity) throws SQLException {
+                                           @QueryParam("labour") int labour, @QueryParam("quantity") int quantity, @QueryParam("part_name") String partName) throws SQLException {
         logger.log(Level.INFO, String.format("Inserting new part model year with parameters: model_year_id = %d and etc.", modelYearId));
         try {
-            partModelYearService.insertNewPartModelYearTODB(modelYearId, partTypeId, measureId, oemPartId, labour, quantity);
+            partModelYearService.insertNewPartModelYearTODB(modelYearId, partTypeId, measureId, oemPartId, labour, quantity, partName);
             return Response.ok().build();
         } catch (SQLException exeption) {
             logger.log(Level.WARNING, String.format("ERROR on part model year with parameters: model_year_id = %d and etc.", modelYearId));

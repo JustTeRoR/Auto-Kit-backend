@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+
 @Entity
 @Table(name = "part", schema = "public")
 public class Part {
@@ -45,8 +46,9 @@ public class Part {
 
     @Column(name="serial_number")
     @NotNull
-    //@GeneratedValue(strategy = GenerationType.IDENTITY) //TODO:: To check this if it's provide unique constraint for this column
     private String serialNumber;
+
+
 
     public Part(int quantity, long measureId, long makeId, long partTypeId, boolean isOEM, BigDecimal lastPurchasePrice, LocalDateTime lastDeliveryTime, String serialNumber) {
         this.quantity = quantity;
@@ -58,6 +60,8 @@ public class Part {
         this.lastDeliveryTime = lastDeliveryTime;
         this.serialNumber = serialNumber;
     }
+
+    public Part () {}
 
     public long getId() {
         return id;

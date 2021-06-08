@@ -46,6 +46,8 @@ public class OrderPart {
     @NotNull
     private long partId;
 
+    public OrderPart() {}
+
     public OrderPart(long orderId, long orderPartStatusId, long partProviderId, BigDecimal purchasePrice, BigDecimal price, BigDecimal labourPrice, int count, long partId) {
         this.orderId = orderId;
         this.orderPartStatusId = orderPartStatusId;

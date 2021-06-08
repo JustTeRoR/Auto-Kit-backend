@@ -1,9 +1,12 @@
 package com.justterror.auto_kit.security;
 
+import com.justterror.auto_kit.part.boundary.PartService;
+import com.justterror.auto_kit.user.boundary.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.json.JsonObject;
 import javax.security.enterprise.AuthenticationStatus;
 import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import javax.security.enterprise.authentication.mechanism.http.HttpMessageContext;
@@ -13,8 +16,17 @@ import javax.security.enterprise.identitystore.CredentialValidationResult;
 import javax.security.enterprise.identitystore.IdentityStoreHandler;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.justterror.auto_kit.security.Constants.*;
 
@@ -34,26 +46,42 @@ public class JWTAuthenticationMechanism implements HttpAuthenticationMechanism {
     @Inject
     private TokenProvider tokenProvider;
 
+    @Inject
+    private UserService userService;
+
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request, HttpServletResponse response, HttpMessageContext context) {
-
         logger.log(Level.INFO, "validateRequest: {0}", request.getRequestURI());
-       //TODO:: In further updates remove password from url string
-        String name = request.getParameter("name");
-        String password = request.getParameter("password");
+        String user_ids = request.getParameter("user_ids");
+        String access_token = request.getParameter("access_token");
+        String version  = "5.92";
         String token = extractToken(context);
-
-            if (name != null && password != null) {
-            logger.log(Level.INFO, "credentials : {0}, {1}", new String[]{name, password});
-            // validation of the credential using the identity store
-            CredentialValidationResult result = identityStoreHandler.validate(new UsernamePasswordCredential(name, password));
-            if (result.getStatus() == CredentialValidationResult.Status.VALID) {
-                // Communicate the details of the authenticated user to the container and return SUCCESS.
-                return createToken(result, context);
+        if (user_ids != null && access_token != null) {
+            logger.log(Level.INFO, "credentials : {0}, {1}", new String[]{user_ids, access_token});
+            try {
+                if (validateVkUser(version, access_token,user_ids)) {
+                    String username = getExternalVKuserName(version, access_token, user_ids);
+                    if (userService.isUserDuplicate(username)) {
+                        //Token can expire, so we updating it here after we checked that user comes from vk.com and it's VALID
+                        if (!userService.getUserById(Long.parseLong(user_ids)).getAccessToken().equals(access_token)) {
+                            userService.updateUserToken(Long.parseLong(user_ids), access_token);
+                        }
+                        CredentialValidationResult result = identityStoreHandler.validate(new UsernamePasswordCredential(username, access_token));
+                        return context.notifyContainerAboutLogin(result);
+                    } else {
+                        long id = Long.parseLong(user_ids);
+                        userService.registerNewUser(id, access_token, username);
+                        CredentialValidationResult result = identityStoreHandler.validate(new UsernamePasswordCredential(username, access_token));
+                        return context.notifyContainerAboutLogin(result);
+                    }
+                }
+            } catch (IOException | SQLException e) {
+                e.printStackTrace();
             }
             // if the authentication failed, we return the unauthorized status in the http response
-                return context.responseUnauthorized();
-        } else if (token != null) {
+            return context.responseUnauthorized();
+        }
+        else if (token != null) {
             // validation of the jwt credential
             return validateToken(token, context);
         } else if (context.isProtected()) {
@@ -128,5 +156,44 @@ public class JWTAuthenticationMechanism implements HttpAuthenticationMechanism {
      */
     public Boolean isRememberMe(HttpMessageContext context) {
         return Boolean.valueOf(context.getRequest().getParameter("rememberme"));
+    }
+
+    public Boolean validateVkUser(String version, String access_token, String user_ids) throws IOException {
+        String vkUserName = getExternalVKuserName(version, access_token, user_ids);
+        if (!vkUserName.equals(" ")) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public String getExternalVKuserName(String version, String access_token, String user_ids) throws IOException {
+        String rawUrl = String.format("https://api.vk.com/method/users.get?v=%s&user_ids=%s&access_token=%s",version, user_ids, access_token);
+        URL validateVkUser = new URL(rawUrl);
+        HttpURLConnection connection = (HttpURLConnection) validateVkUser.openConnection();
+        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        String responseStr = response.toString();
+        String regexp1 = "\"(first_name)\":\"((\\ \"|[^\"])*)";
+        String regexp2 = "\"(last_name)\":\"((\\ \"|[^\"])*)";
+        Pattern pattern = Pattern.compile(regexp1);
+        Pattern pattern1 = Pattern.compile(regexp2);
+        Matcher matcher = pattern.matcher(responseStr);
+        Matcher matcher1 = pattern1.matcher(responseStr);
+        if (matcher.find() && matcher1.find())
+        {
+            String name = matcher.group(2);
+            String surname = matcher1.group(2);
+            return name + " " + surname;
+        } else {
+            return " ";
+        }
     }
 }

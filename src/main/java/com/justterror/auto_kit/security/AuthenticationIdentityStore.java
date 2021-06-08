@@ -25,18 +25,17 @@ public class AuthenticationIdentityStore implements IdentityStore {
     @Inject
     UserRepository repository;
 
-    @PersistenceContext(name="users")
+    @PersistenceContext(name="Auto-Kit")
     private EntityManager entityManager;
 
     @Override
     public CredentialValidationResult validate(Credential credential) {
         CredentialValidationResult result;
-
         if (credential instanceof UsernamePasswordCredential) {
             UsernamePasswordCredential usernamePassword = (UsernamePasswordCredential) credential;
             User expectedUser = repository.findByUsername(usernamePassword.getCaller());
 
-            if (expectedUser != null && expectedUser.getPassword().equals(UserService.getMD5Hash(usernamePassword.getPasswordAsString()))) {
+            if (expectedUser != null && expectedUser.getAccessToken().equals(usernamePassword.getPasswordAsString())) {
                 result = new CredentialValidationResult(usernamePassword.getCaller());
             } else {
                 result = INVALID_RESULT;

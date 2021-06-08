@@ -1,5 +1,6 @@
 package com.justterror.auto_kit.replaceability.boundary;
 
+import com.justterror.auto_kit.part.entity.Part;
 import com.justterror.auto_kit.replaceability.entity.Replaceability;
 
 import javax.ejb.Stateless;
@@ -33,10 +34,24 @@ public class ReplaceabilityService {
         return query.getResultList();
     }
 
-    public List<Replaceability> getByPartID(long  partId) {
-        String rawQuery = String.format("FROM Replaceability WHERE part_id = %d", partId);
+    public List<Object[]> getAllReplacementsForPartWithId(long  partId1) {
+        String rawQuery = String.format("FROM Replaceability WHERE part_id1 = %d", partId1);
         TypedQuery<Replaceability> query = entityManager.createQuery(rawQuery, Replaceability.class);
-        return query.getResultList();
+        List<Replaceability> analogNotes = query.getResultList();
+        String searchCriteria = "";
+
+        for (int i = 0; i < analogNotes.size(); i++) {
+            searchCriteria = searchCriteria.concat(String.valueOf(analogNotes.get(i).getPartId2()));
+            if (i != analogNotes.size() - 1) {
+                searchCriteria = searchCriteria.concat(",");
+            }
+        }
+        String rawPartsQuery = String.format("select p.id, p.quantity, p.measure_id, me.name as measure_name, p.make_id, ma.name as make_name, " +
+                "p.part_type_id, pt.name as part_type_name, p.is_oem, p.last_purchase_price, p.serial_number, p.last_delivery_time from part p " +
+                "inner join measure me on p.measure_id = me.id inner join make ma on p.make_id = ma.id inner join part_type pt on p.part_type_id=pt.id " +
+                "where p.id IN (%s)", searchCriteria);
+        Query partsQuery = entityManager.createNativeQuery(rawPartsQuery);
+        return partsQuery.getResultList();
     }
 
     public List<Replaceability> getAll() {
